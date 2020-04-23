@@ -16,6 +16,7 @@ const App = () => {
     >
       {colors.map(([key, value]) => (
         <Div
+          key={key}
           style={{
             display: 'flex',
             flexDirection: 'column',
@@ -36,8 +37,11 @@ const App = () => {
               boxShadow: '0 0 25px rgba(0, 0, 0, 0.25)',
             }}
           />
-          <Div style={{ marginTop: '1rem', fontFamily: 'monospace' }}>
+          <Div graebenbach style={{ marginTop: '1rem' }}>
             {key}
+          </Div>
+          <Div graebenbach style={{ marginTop: '0.4rem' }}>
+            {(value.includes('#') && value) || value.split(' ')[2].slice(0, -1)}
           </Div>
         </Div>
       ))}

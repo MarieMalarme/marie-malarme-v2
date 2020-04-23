@@ -1,4 +1,3 @@
-import React from 'react'
 import { wrapper } from 'dallas'
 
 const tints = [
@@ -61,14 +60,20 @@ const pixels = [...Array(100).keys()].map(
   (i) => `  --px${(i + 1) * 5}: ${(i + 1) * 5}px;`,
 )
 
-const core = {
-  colors: Object.entries(shades).map(([color, value]) => [
-    `${color}`,
-    `color: var(--${color})`,
-  ]),
+const generated = {
+  colors: Object.assign(
+    ...Object.entries(shades).map(([color, value]) => ({
+      [color]: `color: var(--${color})`,
+    })),
+  ),
 }
 
-const classes = Object.assign(...Object.values(core))
+const core = {
+  murmure: `font-family: 'Murmure'`,
+  graebenbach: `font-family: 'Graebenbach'`,
+}
+
+const classes = { ...Object.assign(...Object.values(generated)), ...core }
 
 const injectCSS = (classes) =>
   document.head.appendChild(
@@ -82,7 +87,7 @@ const injectCSS = (classes) =>
         '/* colors */',
         colors.map(([color, value]) => `  --${color}: ${value};`).join('\n'),
         '}\n',
-        classes
+        Object.entries(classes)
           .map(([selector, rules]) => `.${selector} { ${rules}; }`)
           .join('\n'),
       ].join('\n'),
@@ -91,6 +96,6 @@ const injectCSS = (classes) =>
 
 injectCSS(classes)
 
-const flags = Object.assign({}, ...classes.map((c) => ({ [c[0]]: c[0] })))
+const flags = Object.assign(...Object.keys(classes).map((c) => ({ [c]: c })))
 
 export const Component = wrapper({ ...flags, consume: true })
