@@ -1,11 +1,83 @@
-import React from 'react'
-import { Div } from './lib.js'
-import { colors } from './style.js'
+import React, { Fragment, useState } from 'react'
+import { Code, Div } from './lib.js'
+import { colors, generated, core } from './style.js'
 import './App.css'
 
 const App = () => {
-  return <Colors colors={colors} />
+  return (
+    <Div style={{ padding: '5rem' }}>
+      <Flags />
+      <Colors colors={colors} />
+    </Div>
+  )
 }
+
+const Flag = ({ title, classes }) => {
+  const [open, setOpen] = useState(false)
+  return (
+    <Div
+      className="container"
+      style={{
+        position: 'relative',
+        width: '100%',
+        marginBottom: `${open ? '3rem' : '1.5rem'}`,
+        borderBottom: 'solid 1px var(--grey6)',
+      }}
+    >
+      <Div
+        onClick={() => setOpen(!open)}
+        style={{
+          display: 'flex',
+          alignItems: 'baseline',
+          cursor: 'pointer',
+        }}
+      >
+        <Div
+          fs39
+          murmure
+          style={{
+            marginRight: '20px',
+            marginBottom: '20px',
+            textTransform: 'capitalize',
+          }}
+        >
+          {title}
+        </Div>
+        <Div graebenbach>— {open ? 'Close' : 'Open'}</Div>
+      </Div>
+      {open && (
+        <Div
+          style={{
+            background: 'var(--grey2)',
+            padding: '1.75rem 2rem',
+            lineHeight: '1.75rem',
+          }}
+        >
+          <Code white graebenbach style={{ whiteSpace: 'pre-wrap' }}>
+            {Object.entries(classes)
+              .map(([selector, rules]) => `.${selector} { ${rules}; }`)
+              .join('\n')}
+          </Code>
+        </Div>
+      )}
+    </Div>
+  )
+}
+
+const Flags = () => (
+  <Div
+    style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      flexWrap: 'wrap',
+    }}
+  >
+    <Flag title="Core" classes={core} />
+    {Object.entries(generated).map(([title, classes]) => (
+      <Flag title={title} classes={classes} />
+    ))}
+  </Div>
+)
 
 const Colors = ({ colors }) => (
   <Div
@@ -14,7 +86,6 @@ const Colors = ({ colors }) => (
       flexWrap: 'wrap',
       justifyContent: 'space-between',
       width: '100%',
-      padding: '5rem',
     }}
   >
     {colors.map(([name, value]) => (

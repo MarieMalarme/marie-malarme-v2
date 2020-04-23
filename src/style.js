@@ -56,19 +56,23 @@ export const colors = Object.entries({
   ...shades,
 })
 
-const pixels = [...Array(100).keys()].map(
-  (i) => `  --px${(i + 1) * 5}: ${(i + 1) * 5}px;`,
-)
+const measures = [...Array(100).keys()].map((m) => (m + 1) * 5)
+const pixels = measures.map((p) => `  --px${p}: ${p}px;`)
 
-const generated = {
-  colors: Object.assign(
-    ...Object.entries(shades).map(([color, value]) => ({
+export const generated = {
+  color: Object.assign(
+    ...colors.map(([color, value]) => ({
       [color]: `color: var(--${color})`,
+    })),
+  ),
+  fontSize: Object.assign(
+    ...[...Array(30).keys()].map((i) => ({
+      [`fs${i + 10}`]: `font-size: ${i + 10}px`,
     })),
   ),
 }
 
-const core = {
+export const core = {
   murmure: `font-family: 'Murmure'`,
   graebenbach: `font-family: 'Graebenbach'`,
 }
