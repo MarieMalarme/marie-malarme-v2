@@ -1,4 +1,5 @@
 import { wrapper } from 'dallas'
+import { toDashCase } from './toolbox.js'
 
 const tints = [
   'grey',
@@ -115,6 +116,18 @@ const percentage = (selector) => {
   )
 }
 
+const display = [
+  'block',
+  'inline',
+  'flex',
+  'table',
+  'grid',
+  'flow',
+  'none',
+  'inlineBlock',
+  'inlineFlex',
+]
+
 export const generated = {
   color: Object.assign(
     ...colors.map(([color, value]) => ({
@@ -130,6 +143,9 @@ export const generated = {
   padding: { ...pixelateDirections('padding'), ...pixelateAxis('padding') },
   width: { ...percentage('width'), ...pixelate('width') },
   height: { ...percentage('height'), ...pixelate('height') },
+  display: Object.assign(
+    ...display.map((d) => ({ [d]: `display: ${toDashCase(d)}` })),
+  ),
 }
 
 export const core = {

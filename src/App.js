@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Code, Div } from './lib.js'
-import { colors, generated, core, Component } from './style.js'
+import { Code, Div } from './lib/design.js'
+import { colors, generated, core, Component } from './lib/style.js'
 import './App.css'
 
 const App = () => {
@@ -29,9 +29,9 @@ const Flag = ({ title, classes }) => {
       mb25={!open}
     >
       <Div
+        flex
         onClick={() => setOpen(!open)}
         style={{
-          display: 'flex',
           alignItems: 'baseline',
           cursor: 'pointer',
         }}
@@ -64,8 +64,8 @@ const Flag = ({ title, classes }) => {
 
 const Flags = () => (
   <Div
+    flex
     style={{
-      display: 'flex',
       justifyContent: 'space-between',
       flexWrap: 'wrap',
     }}
@@ -80,8 +80,8 @@ const Flags = () => (
 const Colors = ({ colors }) => (
   <Div
     w100p
+    flex
     style={{
-      display: 'flex',
       flexWrap: 'wrap',
       justifyContent: 'space-between',
     }}
@@ -99,13 +99,13 @@ const Colors = ({ colors }) => (
 const Tint = ({ name, children }) => (
   <Div
     style={{
-      display: 'flex',
       flexDirection: 'column',
       width: 'calc(100% / 9)',
       alignItems: 'center',
       marginRight: `${(name === 'black' && 'calc((100% / 9 * 7))') || '0'}`,
     }}
     mv35
+    flex
   >
     {children}
   </Div>
