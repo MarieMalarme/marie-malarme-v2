@@ -60,13 +60,13 @@ export const colors = Object.entries({
 const measures = array(100).map((m) => (m + 1) * 5)
 const pixels = measures.map((p) => `  --px${p}: ${p}px;`)
 
-const directions = [
-  { a: '' },
-  { t: '-top' },
-  { r: '-right' },
-  { b: '-bottom' },
-  { l: '-left' },
-]
+const directions = Object.entries({
+  a: '',
+  t: '-top',
+  r: '-right',
+  b: '-bottom',
+  l: '-left',
+})
 
 const generate = (data, mapper) => Object.assign(...data.map(mapper))
 
@@ -84,12 +84,8 @@ const pixelate = (selector, suffix = '', direction = '') => {
 
 const pixelateDirections = (selector) => {
   return Object.assign(
-    ...directions.map((obj) =>
-      Object.assign(
-        ...Object.entries(obj).map(([suffix, direction]) =>
-          pixelate(selector, suffix, direction),
-        ),
-      ),
+    ...directions.map(([suffix, direction]) =>
+      pixelate(selector, suffix, direction),
     ),
   )
 }
@@ -115,7 +111,7 @@ const percentage = (selector) => {
   }))
 }
 
-const display = [
+const displays = [
   'block',
   'inline',
   'flex',
@@ -127,7 +123,7 @@ const display = [
   'inlineFlex',
 ]
 
-const flexAlignment = [
+const flexAlignments = [
   'center',
   'start',
   'end',
@@ -138,7 +134,7 @@ const flexAlignment = [
   'lastBaseline',
 ]
 
-const flexJustification = [
+const flexJustifications = [
   'center',
   'start',
   'end',
@@ -151,11 +147,11 @@ const flexJustification = [
   'spaceEvenly',
 ]
 
-const flexAlign = generate(flexAlignment, (a) => ({
+const flexAlign = generate(flexAlignments, (a) => ({
   [`align${capitalize(a)}`]: `align-items: ${toDashCase(a)}`,
 }))
 
-const flexJustify = generate(flexJustification, (j) => {
+const flexJustify = generate(flexJustifications, (j) => {
   const suffix = capitalize(j.replace('space', ''))
   return {
     [`justify${suffix}`]: `justify-content: ${toDashCase(j)}`,
@@ -166,6 +162,18 @@ const flexWrap = generate(['noWrap', 'wrap', 'wrapReverse'], (w) => ({
   [`flex${capitalize(w)}`]: `flex-wrap: ${toDashCase(w)}`,
 }))
 
+const positions = ['static', 'relative', 'absolute', 'fixed', 'sticky']
+
+const cursors = [
+  'default',
+  'pointer',
+  'text',
+  'move',
+  'grab',
+  'zoomIn',
+  'zoomOut',
+]
+
 export const core = {
   murmure: `font-family: 'Murmure'`,
   graebenbach: `font-family: 'Graebenbach'`,
@@ -175,9 +183,7 @@ export const core = {
 }
 
 export const generated = {
-  color: generate(colors, ([color]) => ({
-    [color]: `color: var(--${color})`,
-  })),
+  color: generate(colors, ([color]) => ({ [color]: `color: var(--${color})` })),
   backgroundColor: generate(colors, ([color]) => ({
     [`bg${capitalize(color)}`]: `background-color: var(--${color})`,
   })),
@@ -188,8 +194,18 @@ export const generated = {
   padding: { ...pixelateDirections('padding'), ...pixelateAxis('padding') },
   width: { ...percentage('width'), ...pixelate('width') },
   height: { ...percentage('height'), ...pixelate('height') },
-  display: generate(display, (d) => ({ [d]: `display: ${toDashCase(d)}` })),
+  display: generate(displays, (d) => ({ [d]: `display: ${toDashCase(d)}` })),
   flex: { ...flexAlign, ...flexJustify, ...flexWrap },
+  border: generate(directions, ([suffix, direction]) => ({
+    [`b${suffix}`]: `border${direction}: solid 1px black`,
+  })),
+  borderColor: generate(colors, ([color]) => ({
+    [`b${capitalize(color)}`]: `border-color: var(--${color})`,
+  })),
+  position: generate(positions, (p) => ({ [p]: `position: ${p}` })),
+  cursor: generate(cursors, (c) => ({
+    [c]: `cursor: ${toDashCase(c)}`,
+  })),
 }
 
 const classes = { ...core, ...Object.assign({}, ...Object.values(generated)) }

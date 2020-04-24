@@ -12,30 +12,16 @@ const App = () => {
   )
 }
 
+const FlagWrapper = Component.bb.bGrey6.w100p.div()
 const FlagTitle = Component.fs40.murmure.mr20.mb20.div()
 const FlagCode = Component.pv30.ph35.bgGrey2.div()
+const FlagTab = Component.flex.alignBaseline.cursor.div()
 
 const Flag = ({ title, classes }) => {
   const [open, setOpen] = useState(false)
   return (
-    <Div
-      className="container"
-      style={{
-        position: 'relative',
-        borderBottom: 'solid 1px var(--grey6)',
-      }}
-      w100p
-      mb50={open}
-      mb25={!open}
-    >
-      <Div
-        flex
-        alignBaseline
-        onClick={() => setOpen(!open)}
-        style={{
-          cursor: 'pointer',
-        }}
-      >
+    <FlagWrapper className="container" mb50={open} mb25={!open}>
+      <FlagTab onClick={() => setOpen(!open)}>
         <FlagTitle className="capFirst">
           {title
             .split(/(?=[A-Z])/)
@@ -43,7 +29,7 @@ const Flag = ({ title, classes }) => {
             .toLowerCase()}
         </FlagTitle>
         <Div graebenbach>{open ? '— Close' : '+ Open'}</Div>
-      </Div>
+      </FlagTab>
       {open && (
         <FlagCode
           style={{
@@ -57,7 +43,7 @@ const Flag = ({ title, classes }) => {
           </Code>
         </FlagCode>
       )}
-    </Div>
+    </FlagWrapper>
   )
 }
 
