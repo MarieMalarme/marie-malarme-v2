@@ -1,5 +1,5 @@
 import { wrapper } from 'dallas'
-import { toDashCase, capitalize } from './toolbox.js'
+import { toDashCase, capitalize, array } from './toolbox.js'
 
 const tints = [
   'grey',
@@ -42,7 +42,7 @@ const tints = [
 ]
 
 const camaieu = (name, hue) =>
-  [...Array(9).keys()].map((i) => [
+  array(9).map((i) => [
     `${name}${i + 1}`,
     `hsl(${hue}, ${name === 'grey' ? '0' : '100'}%, ${(i + 1) * 10}%)`,
   ])
@@ -57,7 +57,7 @@ export const colors = Object.entries({
   ...shades,
 })
 
-const measures = [...Array(100).keys()].map((m) => (m + 1) * 5)
+const measures = array(100).map((m) => (m + 1) * 5)
 const pixels = measures.map((p) => `  --px${p}: ${p}px;`)
 
 const directions = [
@@ -106,7 +106,7 @@ const pixelateAxis = (selector) => {
   }
 }
 
-const percentages = [...Array(21).keys()].map((p) => p * 5)
+const percentages = array(21).map((p) => p * 5)
 
 const percentage = (selector) => {
   const prefix = selector[0]
@@ -162,11 +162,25 @@ const flexJustify = generate(flexJustification, (j) => {
   }
 })
 
-const array = (number) => [...Array(number).keys()]
+const flexWrap = generate(['noWrap', 'wrap', 'wrapReverse'], (w) => ({
+  [`flex${capitalize(w)}`]: `flex-wrap: ${toDashCase(w)}`,
+}))
+
+export const core = {
+  murmure: `font-family: 'Murmure'`,
+  graebenbach: `font-family: 'Graebenbach'`,
+  flexColumn: `flex-direction: column`,
+  flexRow: `flex-direction: row`,
+  bRad50p: `border-radius: 50%`,
+}
 
 export const generated = {
-  _: '',
-  color: generate(colors, ([color]) => ({ [color]: `color: var(--${color})` })),
+  color: generate(colors, ([color]) => ({
+    [color]: `color: var(--${color})`,
+  })),
+  backgroundColor: generate(colors, ([color]) => ({
+    [`bg${capitalize(color)}`]: `background-color: var(--${color})`,
+  })),
   fontSize: generate(array(31), (i) => ({
     [`fs${i + 10}`]: `font-size: ${i + 10}px`,
   })),
@@ -175,17 +189,10 @@ export const generated = {
   width: { ...percentage('width'), ...pixelate('width') },
   height: { ...percentage('height'), ...pixelate('height') },
   display: generate(display, (d) => ({ [d]: `display: ${toDashCase(d)}` })),
-  flex: { ...flexAlign, ...flexJustify },
+  flex: { ...flexAlign, ...flexJustify, ...flexWrap },
 }
 
-export const core = {
-  murmure: `font-family: 'Murmure'`,
-  graebenbach: `font-family: 'Graebenbach'`,
-  flexColumn: `flex-direction: column`,
-  flexRow: `flex-direction: row`,
-}
-
-const classes = { ...Object.assign(...Object.values(generated)), ...core }
+const classes = { ...core, ...Object.assign({}, ...Object.values(generated)) }
 
 const injectCSS = (classes) =>
   document.head.appendChild(

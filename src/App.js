@@ -13,7 +13,7 @@ const App = () => {
 }
 
 const FlagTitle = Component.fs40.murmure.mr20.mb20.div()
-const FlagCode = Component.pv30.ph35.div()
+const FlagCode = Component.pv30.ph35.bgGrey2.div()
 
 const Flag = ({ title, classes }) => {
   const [open, setOpen] = useState(false)
@@ -47,7 +47,6 @@ const Flag = ({ title, classes }) => {
       {open && (
         <FlagCode
           style={{
-            background: 'var(--grey2)',
             lineHeight: '1.75rem',
           }}
         >
@@ -63,76 +62,52 @@ const Flag = ({ title, classes }) => {
 }
 
 const Flags = () => (
-  <Div
-    flex
-    style={{
-      flexWrap: 'wrap',
-    }}
-  >
+  <Div flex flexWrap>
     <Flag title="Core" classes={core} />
-    {Object.entries(generated)
-      .filter(([title]) => title !== '_')
-      .map(([title, classes]) => (
-        <Flag key={title} title={title} classes={classes} />
-      ))}
+    {Object.entries(generated).map(([title, classes]) => (
+      <Flag key={title} title={title} classes={classes} />
+    ))}
   </Div>
 )
 
 const Colors = ({ colors }) => (
-  <Div
-    w100p
-    flex
-    style={{
-      flexWrap: 'wrap',
-    }}
-  >
+  <Div w100p flex flexWrap>
     {colors.map(([name, value]) => (
       <Tint name={name} key={name}>
         <TintCircle value={value} />
-        <TintName name={name} />
-        <TintValue value={value} />
+        <TintName>{name}</TintName>
+        <TintValue>
+          {(value.includes('#') && value) || value.split(' ')[2].slice(0, -1)}
+        </TintValue>
       </Tint>
     ))}
   </Div>
 )
 
 const Tint = ({ name, children }) => (
-  <Div
+  <TintStyle
+    key={name}
     style={{
       width: 'calc(100% / 9)',
       marginRight: `${(name === 'black' && 'calc((100% / 9 * 7))') || '0'}`,
     }}
-    alignCenter
-    flexColumn
-    mv35
-    flex
   >
     {children}
-  </Div>
+  </TintStyle>
 )
 
 const TintCircle = ({ value }) => (
-  <Div
+  <TintCircleStyle
     style={{
-      background: value,
-      borderRadius: '50%',
       boxShadow: '0 0 25px rgba(0, 0, 0, 0.25)',
+      background: value,
     }}
-    w30
-    h30
   />
 )
 
-const TintName = ({ name }) => (
-  <Div graebenbach mt15>
-    {name}
-  </Div>
-)
-
-const TintValue = ({ value }) => (
-  <Div graebenbach mt5>
-    {(value.includes('#') && value) || value.split(' ')[2].slice(0, -1)}
-  </Div>
-)
+const TintStyle = Component.alignCenter.flexColumn.mv35.flex.div()
+const TintName = Component.graebenbach.mt15.div()
+const TintValue = Component.graebenbach.mt5.div()
+const TintCircleStyle = Component.w30.h30.bRad50p.div()
 
 export default App
