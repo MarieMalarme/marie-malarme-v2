@@ -1,5 +1,5 @@
 import { wrapper } from 'dallas'
-import { toDashCase } from './toolbox.js'
+import { toDashCase, capitalize } from './toolbox.js'
 
 const tints = [
   'grey',
@@ -68,6 +68,20 @@ const directions = [
   { l: '-left' },
 ]
 
+const generate = (data, mapper) => Object.assign(...data.map(mapper))
+
+const pixelate = (selector, suffix = '', direction = '') => {
+  const prefix = selector[0]
+  const isFunction = typeof selector === 'function'
+  return generate(
+    measures,
+    (measure) =>
+      (isFunction && selector(measure)) || {
+        [`${prefix}${suffix}${measure}`]: `${selector}${direction}: ${measure}px`,
+      },
+  )
+}
+
 const pixelateDirections = (selector) => {
   return Object.assign(
     ...directions.map((obj) =>
@@ -76,19 +90,6 @@ const pixelateDirections = (selector) => {
           pixelate(selector, suffix, direction),
         ),
       ),
-    ),
-  )
-}
-
-const pixelate = (selector, suffix = '', direction = '') => {
-  const prefix = selector[0]
-  const isFunction = typeof selector === 'function'
-  return Object.assign(
-    ...measures.map(
-      (measure) =>
-        (isFunction && selector(measure)) || {
-          [`${prefix}${suffix}${measure}`]: `${selector}${direction}: ${measure}px`,
-        },
     ),
   )
 }
@@ -109,11 +110,9 @@ const percentages = [...Array(21).keys()].map((p) => p * 5)
 
 const percentage = (selector) => {
   const prefix = selector[0]
-  return Object.assign(
-    ...percentages.map((percentage) => ({
-      [`${prefix}${percentage}p`]: `${selector}: ${percentage}%`,
-    })),
-  )
+  return generate(percentages, (percentage) => ({
+    [`${prefix}${percentage}p`]: `${selector}: ${percentage}%`,
+  }))
 }
 
 const display = [
@@ -128,29 +127,62 @@ const display = [
   'inlineFlex',
 ]
 
+const flexAlignment = [
+  'center',
+  'start',
+  'end',
+  'flexStart',
+  'flexEnd',
+  'baseline',
+  'firstBaseline',
+  'lastBaseline',
+]
+
+const flexJustification = [
+  'center',
+  'start',
+  'end',
+  'flexStart',
+  'flexEnd',
+  'left',
+  'right',
+  'spaceBetween',
+  'spaceAround',
+  'spaceEvenly',
+]
+
+const flexAlign = generate(flexAlignment, (a) => ({
+  [`align${capitalize(a)}`]: `align-items: ${toDashCase(a)}`,
+}))
+
+const flexJustify = generate(flexJustification, (j) => {
+  const suffix = capitalize(j.replace('space', ''))
+  return {
+    [`justify${suffix}`]: `justify-content: ${toDashCase(j)}`,
+  }
+})
+
+const array = (number) => [...Array(number).keys()]
+
 export const generated = {
-  color: Object.assign(
-    ...colors.map(([color, value]) => ({
-      [color]: `color: var(--${color})`,
-    })),
-  ),
-  fontSize: Object.assign(
-    ...[...Array(31).keys()].map((i) => ({
-      [`fs${i + 10}`]: `font-size: ${i + 10}px`,
-    })),
-  ),
+  _: '',
+  color: generate(colors, ([color]) => ({ [color]: `color: var(--${color})` })),
+  fontSize: generate(array(31), (i) => ({
+    [`fs${i + 10}`]: `font-size: ${i + 10}px`,
+  })),
   margin: { ...pixelateDirections('margin'), ...pixelateAxis('margin') },
   padding: { ...pixelateDirections('padding'), ...pixelateAxis('padding') },
   width: { ...percentage('width'), ...pixelate('width') },
   height: { ...percentage('height'), ...pixelate('height') },
-  display: Object.assign(
-    ...display.map((d) => ({ [d]: `display: ${toDashCase(d)}` })),
-  ),
+  display: generate(display, (d) => ({ [d]: `display: ${toDashCase(d)}` })),
+  flex: { ...flexAlign, ...flexJustify },
 }
 
 export const core = {
   murmure: `font-family: 'Murmure'`,
   graebenbach: `font-family: 'Graebenbach'`,
+  flexColumn: `flex-direction: column`,
+  flexRow: `flex-direction: row`,
 }
 
 const classes = { ...Object.assign(...Object.values(generated)), ...core }

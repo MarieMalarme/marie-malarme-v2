@@ -30,9 +30,9 @@ const Flag = ({ title, classes }) => {
     >
       <Div
         flex
+        alignBaseline
         onClick={() => setOpen(!open)}
         style={{
-          alignItems: 'baseline',
           cursor: 'pointer',
         }}
       >
@@ -66,14 +66,15 @@ const Flags = () => (
   <Div
     flex
     style={{
-      justifyContent: 'space-between',
       flexWrap: 'wrap',
     }}
   >
     <Flag title="Core" classes={core} />
-    {Object.entries(generated).map(([title, classes]) => (
-      <Flag key={title} title={title} classes={classes} />
-    ))}
+    {Object.entries(generated)
+      .filter(([title]) => title !== '_')
+      .map(([title, classes]) => (
+        <Flag key={title} title={title} classes={classes} />
+      ))}
   </Div>
 )
 
@@ -83,7 +84,6 @@ const Colors = ({ colors }) => (
     flex
     style={{
       flexWrap: 'wrap',
-      justifyContent: 'space-between',
     }}
   >
     {colors.map(([name, value]) => (
@@ -99,11 +99,11 @@ const Colors = ({ colors }) => (
 const Tint = ({ name, children }) => (
   <Div
     style={{
-      flexDirection: 'column',
       width: 'calc(100% / 9)',
-      alignItems: 'center',
       marginRight: `${(name === 'black' && 'calc((100% / 9 * 7))') || '0'}`,
     }}
+    alignCenter
+    flexColumn
     mv35
     flex
   >

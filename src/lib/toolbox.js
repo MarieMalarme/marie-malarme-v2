@@ -3,3 +3,6 @@ export const toDashCase = (string) =>
     .split(/(?=[A-Z])/)
     .join('-')
     .toLowerCase()
+
+export const capitalize = (string) =>
+  string.charAt(0).toUpperCase() + string.slice(1)
