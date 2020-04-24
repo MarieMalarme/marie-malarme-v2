@@ -1,16 +1,19 @@
 import React, { useState } from 'react'
 import { Code, Div } from './lib.js'
-import { colors, generated, core } from './style.js'
+import { colors, generated, core, Component } from './style.js'
 import './App.css'
 
 const App = () => {
   return (
-    <Div style={{ padding: '5rem' }}>
+    <Div pa100>
       <Flags />
       <Colors colors={colors} />
     </Div>
   )
 }
+
+const FlagTitle = Component.fs40.murmure.mr20.mb20.div()
+const FlagCode = Component.pv30.ph35.div()
 
 const Flag = ({ title, classes }) => {
   const [open, setOpen] = useState(false)
@@ -20,9 +23,10 @@ const Flag = ({ title, classes }) => {
       style={{
         position: 'relative',
         width: '100%',
-        marginBottom: `${open ? '3rem' : '1.5rem'}`,
         borderBottom: 'solid 1px var(--grey6)',
       }}
+      mb50={open}
+      mb25={!open}
     >
       <Div
         onClick={() => setOpen(!open)}
@@ -32,36 +36,27 @@ const Flag = ({ title, classes }) => {
           cursor: 'pointer',
         }}
       >
-        <Div
-          fs40
-          murmure
-          style={{
-            marginRight: '20px',
-            marginBottom: '20px',
-          }}
-          className="capFirst"
-        >
+        <FlagTitle className="capFirst">
           {title
             .split(/(?=[A-Z])/)
             .join(' ')
             .toLowerCase()}
-        </Div>
+        </FlagTitle>
         <Div graebenbach>{open ? '— Close' : '+ Open'}</Div>
       </Div>
       {open && (
-        <Div
+        <FlagCode
           style={{
             background: 'var(--grey2)',
-            padding: '1.75rem 2rem',
             lineHeight: '1.75rem',
           }}
         >
-          <Code white graebenbach style={{ whiteSpace: 'pre-wrap' }}>
+          <Code style={{ whiteSpace: 'pre-wrap' }}>
             {Object.entries(classes)
               .map(([selector, rules]) => `.${selector} { ${rules}; }`)
               .join('\n')}
           </Code>
-        </Div>
+        </FlagCode>
       )}
     </Div>
   )
@@ -108,10 +103,9 @@ const Tint = ({ name, children }) => (
       flexDirection: 'column',
       width: 'calc(100% / 9)',
       alignItems: 'center',
-      marginTop: `3rem`,
-      marginBottom: `3rem`,
       marginRight: `${(name === 'black' && 'calc((100% / 9 * 7))') || '0'}`,
     }}
+    mv35
   >
     {children}
   </Div>
@@ -120,23 +114,23 @@ const Tint = ({ name, children }) => (
 const TintCircle = ({ value }) => (
   <Div
     style={{
-      width: '30px',
-      height: '30px',
       background: value,
       borderRadius: '50%',
       boxShadow: '0 0 25px rgba(0, 0, 0, 0.25)',
     }}
+    w30
+    h30
   />
 )
 
 const TintName = ({ name }) => (
-  <Div graebenbach style={{ marginTop: '1rem' }}>
+  <Div graebenbach mt15>
     {name}
   </Div>
 )
 
 const TintValue = ({ value }) => (
-  <Div graebenbach style={{ marginTop: '0.4rem' }}>
+  <Div graebenbach mt5>
     {(value.includes('#') && value) || value.split(' ')[2].slice(0, -1)}
   </Div>
 )
