@@ -14,8 +14,8 @@ const App = () => {
 
 const FlagWrapper = Component.bb.bGrey6.w100p.div()
 const FlagTitle = Component.fs40.murmure.mr20.mb20.div()
-const FlagCode = Component.pv30.ph35.bgGrey2.div()
-const FlagTab = Component.flex.alignBaseline.cursor.div()
+const FlagCode = Component.pv30.ph35.bgGrey2.lh25.div()
+const FlagTab = Component.flex.alignBaseline.pointer.div()
 
 const Flag = ({ title, classes }) => {
   const [open, setOpen] = useState(false)
@@ -31,12 +31,8 @@ const Flag = ({ title, classes }) => {
         <Div graebenbach>{open ? '— Close' : '+ Open'}</Div>
       </FlagTab>
       {open && (
-        <FlagCode
-          style={{
-            lineHeight: '1.75rem',
-          }}
-        >
-          <Code style={{ whiteSpace: 'pre-wrap' }}>
+        <FlagCode>
+          <Code>
             {Object.entries(classes)
               .map(([selector, rules]) => `.${selector} { ${rules}; }`)
               .join('\n')}

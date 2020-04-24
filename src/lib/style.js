@@ -174,6 +174,15 @@ const cursors = [
   'zoomOut',
 ]
 
+const whiteSpaces = [
+  'normal',
+  'nowrap',
+  'pre',
+  'preWrap',
+  'preLine',
+  'breakSpaces',
+]
+
 export const core = {
   murmure: `font-family: 'Murmure'`,
   graebenbach: `font-family: 'Graebenbach'`,
@@ -205,6 +214,12 @@ export const generated = {
   position: generate(positions, (p) => ({ [p]: `position: ${p}` })),
   cursor: generate(cursors, (c) => ({
     [c]: `cursor: ${toDashCase(c)}`,
+  })),
+  lineHeight: generate(array(21), (i) => ({
+    [`lh${i + 10}`]: `line-height: ${i + 10}px`,
+  })),
+  whiteSpace: generate(whiteSpaces, (w) => ({
+    [`ws${capitalize(w)}`]: `white-space: ${toDashCase(w)}`,
   })),
 }
 
