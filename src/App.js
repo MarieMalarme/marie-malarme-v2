@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { Code, Div } from './lib/design.js'
-import { colors, generated, core, Component } from './lib/style.js'
+import { Component, Code, Div } from './lib/design.js'
+import { colors } from './lib/colors.js'
+import { generated, core } from './lib/style.js'
 import './App.css'
 
 const App = () => {
