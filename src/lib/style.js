@@ -57,7 +57,7 @@ export const colors = Object.entries({
   ...shades,
 })
 
-const measures = array(100).map((m) => (m + 1) * 5)
+const measures = array(101).map((m) => m * 5)
 const pixels = measures.map((p) => `  --px${p}: ${p}px;`)
 
 const directions = Object.entries({
