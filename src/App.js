@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { useState } from 'react'
 import { Code, Div } from './lib.js'
 import { colors, generated, core } from './style.js'
 import './App.css'
@@ -33,17 +33,20 @@ const Flag = ({ title, classes }) => {
         }}
       >
         <Div
-          fs39
+          fs40
           murmure
           style={{
             marginRight: '20px',
             marginBottom: '20px',
-            textTransform: 'capitalize',
           }}
+          className="capFirst"
         >
-          {title}
+          {title
+            .split(/(?=[A-Z])/)
+            .join(' ')
+            .toLowerCase()}
         </Div>
-        <Div graebenbach>— {open ? 'Close' : 'Open'}</Div>
+        <Div graebenbach>{open ? '— Close' : '+ Open'}</Div>
       </Div>
       {open && (
         <Div
@@ -74,7 +77,7 @@ const Flags = () => (
   >
     <Flag title="Core" classes={core} />
     {Object.entries(generated).map(([title, classes]) => (
-      <Flag title={title} classes={classes} />
+      <Flag key={title} title={title} classes={classes} />
     ))}
   </Div>
 )

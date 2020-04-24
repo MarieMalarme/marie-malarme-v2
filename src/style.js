@@ -59,6 +59,51 @@ export const colors = Object.entries({
 const measures = [...Array(100).keys()].map((m) => (m + 1) * 5)
 const pixels = measures.map((p) => `  --px${p}: ${p}px;`)
 
+const directions = [
+  { a: '' },
+  { t: '-top' },
+  { r: '-right' },
+  { b: '-bottom' },
+  { l: '-left' },
+]
+
+const pixelateDirections = (selector) => {
+  return Object.assign(
+    ...directions.map((obj) =>
+      Object.assign(
+        ...Object.entries(obj).map(([suffix, direction]) =>
+          pixelate(selector, suffix, direction),
+        ),
+      ),
+    ),
+  )
+}
+
+const pixelate = (selector, suffix = '', direction = '') => {
+  const prefix = selector[0]
+  const isFunction = typeof selector === 'function'
+  return Object.assign(
+    ...measures.map(
+      (measure) =>
+        (isFunction && selector(measure)) || {
+          [`${prefix}${suffix}${measure}`]: `${selector}${direction}: ${measure}px`,
+        },
+    ),
+  )
+}
+
+const pixelateAxis = (selector) => {
+  const prefix = selector[0]
+  return {
+    ...pixelate((measure) => ({
+      [`${prefix}v${measure}`]: `${selector}-top: ${measure}px; ${selector}-bottom: ${measure}px;`,
+    })),
+    ...pixelate((measure) => ({
+      [`${prefix}h${measure}`]: `${selector}-left: ${measure}px; ${selector}-right: ${measure}px;`,
+    })),
+  }
+}
+
 export const generated = {
   color: Object.assign(
     ...colors.map(([color, value]) => ({
@@ -66,10 +111,14 @@ export const generated = {
     })),
   ),
   fontSize: Object.assign(
-    ...[...Array(30).keys()].map((i) => ({
+    ...[...Array(31).keys()].map((i) => ({
       [`fs${i + 10}`]: `font-size: ${i + 10}px`,
     })),
   ),
+  margin: { ...pixelateDirections('margin'), ...pixelateAxis('margin') },
+  padding: { ...pixelateDirections('padding'), ...pixelateAxis('padding') },
+  width: pixelate('width'),
+  height: pixelate('height'),
 }
 
 export const core = {
