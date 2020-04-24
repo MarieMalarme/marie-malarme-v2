@@ -104,6 +104,17 @@ const pixelateAxis = (selector) => {
   }
 }
 
+const percentages = [...Array(21).keys()].map((p) => p * 5)
+
+const percentage = (selector) => {
+  const prefix = selector[0]
+  return Object.assign(
+    ...percentages.map((percentage) => ({
+      [`${prefix}${percentage}p`]: `${selector}: ${percentage}%`,
+    })),
+  )
+}
+
 export const generated = {
   color: Object.assign(
     ...colors.map(([color, value]) => ({
@@ -117,8 +128,8 @@ export const generated = {
   ),
   margin: { ...pixelateDirections('margin'), ...pixelateAxis('margin') },
   padding: { ...pixelateDirections('padding'), ...pixelateAxis('padding') },
-  width: pixelate('width'),
-  height: pixelate('height'),
+  width: { ...percentage('width'), ...pixelate('width') },
+  height: { ...percentage('height'), ...pixelate('height') },
 }
 
 export const core = {

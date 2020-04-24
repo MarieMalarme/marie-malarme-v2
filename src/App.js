@@ -22,9 +22,9 @@ const Flag = ({ title, classes }) => {
       className="container"
       style={{
         position: 'relative',
-        width: '100%',
         borderBottom: 'solid 1px var(--grey6)',
       }}
+      w100p
       mb50={open}
       mb25={!open}
     >
@@ -79,11 +79,11 @@ const Flags = () => (
 
 const Colors = ({ colors }) => (
   <Div
+    w100p
     style={{
       display: 'flex',
       flexWrap: 'wrap',
       justifyContent: 'space-between',
-      width: '100%',
     }}
   >
     {colors.map(([name, value]) => (
