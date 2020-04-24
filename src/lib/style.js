@@ -183,6 +183,15 @@ const whiteSpaces = [
   'breakSpaces',
 ]
 
+const transitions = [
+  'all',
+  'color',
+  'background',
+  'opacity',
+  'boxShadow',
+  'border',
+]
+
 export const core = {
   murmure: `font-family: 'Murmure'`,
   graebenbach: `font-family: 'Graebenbach'`,
@@ -220,6 +229,9 @@ export const generated = {
   })),
   whiteSpace: generate(whiteSpaces, (w) => ({
     [`ws${capitalize(w)}`]: `white-space: ${toDashCase(w)}`,
+  })),
+  transition: generate(transitions, (t) => ({
+    [`anim${capitalize(t)}`]: `transition: ${toDashCase(t)} 0.2s ease-in-out`,
   })),
 }
 
