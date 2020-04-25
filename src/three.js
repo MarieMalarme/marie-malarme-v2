@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import {
   Scene,
   PerspectiveCamera,
@@ -21,6 +21,9 @@ export const Three = () => {
 }
 
 export const Canvas = ({ children }) => {
+  const [state, setState] = useState({})
+  const ref = useRef(null)
+
   const scene = new Scene()
   const ratio = window.innerWidth / window.innerHeight
   const camera = new PerspectiveCamera(70, ratio, 0.1, 500)
@@ -42,18 +45,16 @@ export const Canvas = ({ children }) => {
   children = Array.isArray(children) ? children : [children]
   const childrenUpdated = children.map((child) => ({
     ...child,
-    props: { ...child.props, scene },
+    props: { ...child.props, canvasProps: { scene, state, setState } },
   }))
 
   useEffect(() => {
     animate()
-  })
+    ref.current.appendChild(renderer.domElement)
+  }, [])
 
-  return (
-    <div ref={(ref) => ref.appendChild(renderer.domElement)}>
-      {childrenUpdated}
-    </div>
-  )
+
+  return <div ref={ref}>{childrenUpdated}</div>
 }
 
 const boxGeometry = new BoxGeometry(15, 15, 15)
@@ -62,20 +63,32 @@ const normalMaterial = new MeshNormalMaterial()
 const coords = { x: 0, y: 0, z: 0 }
 
 export const Mesh = ({
-  scene,
+  canvasProps,
   geometry,
   material,
   position = coords,
   rotation = coords,
   ...props
 }) => {
-  const { x: px, y: py, z: pz } = position
-  const { x: rx, y: ry, z: rz } = rotation
   const geo = geometry || boxGeometry
   const mat = material || normalMaterial
-  const cube = new SetMesh(geo, mat)
-  cube.position.set(px, py, pz)
-  cube.rotation.set(rx, ry, rz)
-  scene.add(Object.assign(cube, props))
+  const shape = new SetMesh(geo, mat)
+  const { x: px, y: py, z: pz } = position
+  const { x: rx, y: ry, z: rz } = rotation
+  shape.position.set(px, py, pz)
+  shape.rotation.set(rx, ry, rz)
+
+  const { scene, setState, state } = canvasProps
+  const mesh = Object.assign(shape, props)
+  scene.add(mesh)
+
+  useEffect(() => {
+    setState({ meshes: { ...state.meshes, [mesh.name]: mesh } })
+  }, [])
+
+  useEffect(() => {
+    scene.remove(mesh)
+  }, [mesh, scene])
+
   return null
 }
