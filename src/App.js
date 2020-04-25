@@ -2,13 +2,19 @@ import React, { useState } from 'react'
 import { Component, Code, Div } from './lib/design.js'
 import { colors } from './lib/colors.js'
 import { generated, core } from './lib/style.js'
+
 import './App.css'
+
+import { Three } from './three.js'
 
 const App = () => {
   return (
-    <Div pa100>
-      <Flags />
-      <Colors colors={colors} />
+    <Div>
+      <Three />
+      <Div pa100>
+        <Flags />
+        <Colors colors={colors} />
+      </Div>
     </Div>
   )
 }
