@@ -6,6 +6,8 @@ import {
   BoxGeometry,
   PlaneGeometry,
   SphereGeometry,
+  TextGeometry,
+  FontLoader,
   MeshNormalMaterial,
   MeshBasicMaterial,
   MeshPhongMaterial,
@@ -14,17 +16,14 @@ import {
 } from 'three'
 import { Div, Component } from './lib/design.js'
 import { generateId } from './lib/toolbox.js'
+import Murmure from './fonts/Murmure.json'
 
 export const Three = () => {
   return (
     <Canvas>
-      <Mesh
-        rotation={{ x: 1, y: 2, z: 3 }}
-        position={{ x: 10, y: 20, z: 10 }}
-        name="box"
-      >
-        <Geometry type="sphere" />
-        <Material type="phong" />
+      <Mesh rotation={{ x: 1, y: 2, z: 3 }} name="box">
+        <Text center text="wesh" size={30} />
+        <Material type="normal" />
       </Mesh>
       <SpotLight position={{ x: -40, y: -50, z: 50 }} />
     </Canvas>
@@ -91,9 +90,9 @@ const EmptyCanvas = ({ ref }) => (
 )
 
 // different types of geometry
-const planeGeometry = new PlaneGeometry(15, 15, 15)
-const boxGeometry = new BoxGeometry(15, 15, 15)
-const sphereGeometry = new SphereGeometry(15, 15, 15)
+const plane = new PlaneGeometry(15, 15, 15)
+const box = new BoxGeometry(15, 15, 15)
+const sphere = new SphereGeometry(15, 15, 15)
 
 // different types of material
 const normalMaterial = new MeshNormalMaterial()
@@ -121,14 +120,42 @@ export const SpotLight = ({
   return null
 }
 
-const Geometry = ({ meshProps, type = boxGeometry, ...props }) => {
+const Geometry = ({ meshProps, type = box, ...props }) => {
   const geometry =
-    (type === 'cube' && boxGeometry) ||
-    (type === 'sphere' && sphereGeometry) ||
+    (type === 'plane' && plane) ||
+    (type === 'cube' && box) ||
+    (type === 'sphere' && sphere) ||
     type
   meshProps.current = {
     ...meshProps.current,
     geometry: Object.assign(geometry, props),
+  }
+  return null
+}
+
+const Text = ({
+  meshProps,
+  text = 'kikoo',
+  size = 10,
+  depth = 5,
+  typeface = Murmure,
+  center,
+  ...props
+}) => {
+  const loader = new FontLoader()
+  const font = loader.parse(typeface)
+  const geometry = new TextGeometry(text, {
+    font,
+    size,
+    height: depth,
+    ...props,
+  })
+
+  center && geometry.center()
+
+  meshProps.current = {
+    ...meshProps.current,
+    geometry,
   }
   return null
 }
@@ -160,6 +187,7 @@ export const Mesh = ({
   position = coords,
   rotation = coords,
   shadow = true,
+  center,
   children = [],
   ...props
 }) => {
@@ -172,7 +200,7 @@ export const Mesh = ({
   }))
 
   useEffect(() => {
-    const geo = meshProps.current.geometry || boxGeometry
+    const geo = meshProps.current.geometry || box
     const mat = meshProps.current.material || normalMaterial
 
     const mesh = new SetMesh(geo, mat)
