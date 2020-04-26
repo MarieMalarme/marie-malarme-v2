@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import {
   Scene,
   PerspectiveCamera,
@@ -7,6 +7,8 @@ import {
   MeshNormalMaterial,
   Mesh as SetMesh,
 } from 'three'
+import { Div, Component } from './lib/design.js'
+import { generateId } from './lib/toolbox.js'
 
 export const Three = () => {
   return (
@@ -20,9 +22,9 @@ export const Three = () => {
   )
 }
 
-export const Canvas = ({ children }) => {
-  const [state, setState] = useState({})
-  const ref = useRef(null)
+export const Canvas = ({ children = [] }) => {
+  const meshes = useRef()
+  const ref = useRef()
 
   const scene = new Scene()
   const ratio = window.innerWidth / window.innerHeight
@@ -34,28 +36,48 @@ export const Canvas = ({ children }) => {
   renderer.setClearAlpha(0)
   renderer.setSize(window.innerWidth, window.innerHeight)
 
-  const animate = () => {
-    requestAnimationFrame(animate)
-    const target = scene.children.find((c) => c.name === 'box')
-    target.rotation.x += 0.01
-    target.rotation.y += 0.01
-    renderer.render(scene, camera)
-  }
-
   children = Array.isArray(children) ? children : [children]
   const childrenUpdated = children.map((child) => ({
     ...child,
-    props: { ...child.props, canvasProps: { scene, state, setState } },
+    props: { ...child.props, meshes },
   }))
 
+  const animate = () => {
+    requestAnimationFrame(animate)
+    const targets = Object.values(meshes.current)
+    targets.map((target) => {
+      target.rotation.x += 0.01
+      target.rotation.y += 0.01
+      return target
+    })
+    renderer.render(scene, camera)
+  }
+
+  const hasChildren = children.length
+
   useEffect(() => {
+    if (!hasChildren) return
+    Object.values(meshes.current).map((m) => scene.add(m))
     animate()
     ref.current.appendChild(renderer.domElement)
-  }, [])
+  })
 
+  if (!hasChildren) return <EmptyCanvas />
 
-  return <div ref={ref}>{childrenUpdated}</div>
+  return <CanvasWrapper reference={ref}>{childrenUpdated}</CanvasWrapper>
 }
+
+const CanvasWrapper = ({ reference, children }) => (
+  <div ref={reference}>{children}</div>
+)
+
+const EmptyCanvasWrapper = Component.lh28.pa100.flex.flexColumn.alignCenter.justifyCenter.bgGrey1.white.div()
+const EmptyCanvas = ({ ref }) => (
+  <EmptyCanvasWrapper>
+    <Div>Nothing yet in your canvas !</Div>
+    <Div>To start, add a component {`<Mesh />`}</Div>
+  </EmptyCanvasWrapper>
+)
 
 const boxGeometry = new BoxGeometry(15, 15, 15)
 const normalMaterial = new MeshNormalMaterial()
@@ -63,7 +85,8 @@ const normalMaterial = new MeshNormalMaterial()
 const coords = { x: 0, y: 0, z: 0 }
 
 export const Mesh = ({
-  canvasProps,
+  meshes,
+  name,
   geometry,
   material,
   position = coords,
@@ -77,18 +100,11 @@ export const Mesh = ({
   const { x: rx, y: ry, z: rz } = rotation
   shape.position.set(px, py, pz)
   shape.rotation.set(rx, ry, rz)
+  shape.name = name || generateId()
 
-  const { scene, setState, state } = canvasProps
   const mesh = Object.assign(shape, props)
-  scene.add(mesh)
 
-  useEffect(() => {
-    setState({ meshes: { ...state.meshes, [mesh.name]: mesh } })
-  }, [])
-
-  useEffect(() => {
-    scene.remove(mesh)
-  }, [mesh, scene])
+  meshes.current = { ...meshes.current, [mesh.name]: mesh }
 
   return null
 }

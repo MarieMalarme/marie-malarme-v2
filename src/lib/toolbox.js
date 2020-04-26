@@ -10,3 +10,9 @@ export const capitalize = (string) =>
 export const array = (number) => [...Array(number).keys()]
 
 export const generate = (data, mapper) => Object.assign(...data.map(mapper))
+
+export const generateId = () =>
+  Math.random()
+    .toString(36)
+    .slice(2, 7)
+    .padEnd(5, '#')
