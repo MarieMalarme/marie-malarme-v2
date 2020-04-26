@@ -23,7 +23,7 @@ export const Three = () => {
         position={{ x: 10, y: 20, z: 10 }}
         name="box"
       >
-        <Geometry />
+        <Geometry type="sphere" />
         <Material type="phong" />
       </Mesh>
       <SpotLight position={{ x: -40, y: -50, z: 50 }} />
@@ -109,9 +109,9 @@ export const SpotLight = ({
   position = coords,
   ...props
 }) => {
-  const { x: px, y: py, z: pz } = position
+  const { x, y, z } = position
   const spotLight = new SetSpotLight(color)
-  spotLight.position.set(px, py, pz)
+  spotLight.position.set(x, y, z)
   spotLight.name = name || `spotlight-${generateId()}`
   spotLight.castShadow = true
   meshes.current = {
@@ -121,14 +121,14 @@ export const SpotLight = ({
   return null
 }
 
-const Geometry = ({ meshProps, geometry = boxGeometry, ...props }) => {
-  const geo =
-    (geometry === 'cube' && boxGeometry) ||
-    (geometry === 'sphere' && sphereGeometry) ||
-    geometry
+const Geometry = ({ meshProps, type = boxGeometry, ...props }) => {
+  const geometry =
+    (type === 'cube' && boxGeometry) ||
+    (type === 'sphere' && sphereGeometry) ||
+    type
   meshProps.current = {
     ...meshProps.current,
-    geometry: Object.assign(geo, props),
+    geometry: Object.assign(geometry, props),
   }
   return null
 }
@@ -175,19 +175,20 @@ export const Mesh = ({
     const geo = meshProps.current.geometry || boxGeometry
     const mat = meshProps.current.material || normalMaterial
 
-    const shape = new SetMesh(geo, mat)
-    shape.name = name || `mesh-${generateId()}`
+    const mesh = new SetMesh(geo, mat)
+    mesh.name = name || `mesh-${generateId()}`
 
     const { x: px, y: py, z: pz } = position
     const { x: rx, y: ry, z: rz } = rotation
-    shape.position.set(px, py, pz)
-    shape.rotation.set(rx, ry, rz)
+    mesh.position.set(px, py, pz)
+    mesh.rotation.set(rx, ry, rz)
 
-    shape.receiveShadow = shadow
+    mesh.receiveShadow = shadow
 
-    const mesh = Object.assign(shape, props)
-
-    meshes.current = { ...meshes.current, [mesh.name]: mesh }
+    meshes.current = {
+      ...meshes.current,
+      [mesh.name]: Object.assign(mesh, props),
+    }
   })
 
   return <Fragment>{childrenUpdated}</Fragment>
