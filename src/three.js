@@ -22,9 +22,9 @@ export const Three = () => {
         rotation={{ x: 1, y: 2, z: 3 }}
         position={{ x: 10, y: 20, z: 10 }}
         name="box"
-        material="phong"
       >
         <Geometry />
+        <Material type="phong" />
       </Mesh>
       <SpotLight position={{ x: -40, y: -50, z: 50 }} />
     </Canvas>
@@ -102,9 +102,15 @@ const phongMaterial = new MeshPhongMaterial({ color: 0x55ffff })
 
 const coords = { x: 0, y: 0, z: 0 }
 
-export const SpotLight = ({ meshes, name, position = coords, ...props }) => {
+export const SpotLight = ({
+  meshes,
+  name,
+  color = 'white',
+  position = coords,
+  ...props
+}) => {
   const { x: px, y: py, z: pz } = position
-  const spotLight = new SetSpotLight(0xffffff)
+  const spotLight = new SetSpotLight(color)
   spotLight.position.set(px, py, pz)
   spotLight.name = name || `spotlight-${generateId()}`
   spotLight.castShadow = true
@@ -115,20 +121,42 @@ export const SpotLight = ({ meshes, name, position = coords, ...props }) => {
   return null
 }
 
-const Geometry = ({ meshProps, geometry = boxGeometry }) => {
+const Geometry = ({ meshProps, geometry = boxGeometry, ...props }) => {
   const geo =
     (geometry === 'cube' && boxGeometry) ||
     (geometry === 'sphere' && sphereGeometry) ||
     geometry
-  meshProps.current = { ...meshProps.current, geometry: geo }
+  meshProps.current = {
+    ...meshProps.current,
+    geometry: Object.assign(geo, props),
+  }
+  return null
+}
+
+const Material = ({
+  meshProps,
+  type = 'normal',
+  color = 'lightblue',
+  ...props
+}) => {
+  const material =
+    (type === 'phong' && phongMaterial) ||
+    (type === 'normal' && normalMaterial) ||
+    (type === 'basic' && basicMaterial) ||
+    type
+
+  type !== 'normal' && material.color.set(color)
+
+  meshProps.current = {
+    ...meshProps.current,
+    material: Object.assign(material, props),
+  }
   return null
 }
 
 export const Mesh = ({
   meshes,
   name,
-  material = normalMaterial,
-  color = 0xad03fc,
   position = coords,
   rotation = coords,
   shadow = true,
@@ -143,15 +171,9 @@ export const Mesh = ({
     props: { ...child.props, meshProps },
   }))
 
-  const mat =
-    (material === 'phong' && phongMaterial) ||
-    (material === 'normal' && normalMaterial) ||
-    (material === 'basic' && basicMaterial) ||
-    material
-  mat.color.setHex(color)
-
   useEffect(() => {
-    const geo = meshProps.current.geometry
+    const geo = meshProps.current.geometry || boxGeometry
+    const mat = meshProps.current.material || normalMaterial
 
     const shape = new SetMesh(geo, mat)
     shape.name = name || `mesh-${generateId()}`
