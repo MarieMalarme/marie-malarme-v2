@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { Fragment, useEffect, useRef } from 'react'
 import {
   Scene,
   PerspectiveCamera,
@@ -23,7 +23,9 @@ export const Three = () => {
         position={{ x: 10, y: 20, z: 10 }}
         name="box"
         material="phong"
-      />
+      >
+        <Geometry />
+      </Mesh>
       <SpotLight position={{ x: -40, y: -50, z: 50 }} />
     </Canvas>
   )
@@ -113,21 +115,33 @@ export const SpotLight = ({ meshes, name, position = coords, ...props }) => {
   return null
 }
 
+const Geometry = ({ meshProps, geometry = boxGeometry }) => {
+  const geo =
+    (geometry === 'cube' && boxGeometry) ||
+    (geometry === 'sphere' && sphereGeometry) ||
+    geometry
+  meshProps.current = { ...meshProps.current, geometry: geo }
+  return null
+}
+
 export const Mesh = ({
   meshes,
   name,
-  geometry = boxGeometry,
   material = normalMaterial,
   color = 0xad03fc,
   position = coords,
   rotation = coords,
   shadow = true,
+  children = [],
   ...props
 }) => {
-  const geo =
-    (geometry === 'cube' && boxGeometry) ||
-    (geometry === 'sphere' && sphereGeometry) ||
-    geometry
+  const meshProps = useRef({})
+
+  children = Array.isArray(children) ? children : [children]
+  const childrenUpdated = children.map((child) => ({
+    ...child,
+    props: { ...child.props, meshProps },
+  }))
 
   const mat =
     (material === 'phong' && phongMaterial) ||
@@ -136,19 +150,23 @@ export const Mesh = ({
     material
   mat.color.setHex(color)
 
-  const shape = new SetMesh(geo, mat)
-  shape.name = name || `mesh-${generateId()}`
+  useEffect(() => {
+    const geo = meshProps.current.geometry
 
-  const { x: px, y: py, z: pz } = position
-  const { x: rx, y: ry, z: rz } = rotation
-  shape.position.set(px, py, pz)
-  shape.rotation.set(rx, ry, rz)
+    const shape = new SetMesh(geo, mat)
+    shape.name = name || `mesh-${generateId()}`
 
-  shape.receiveShadow = shadow
+    const { x: px, y: py, z: pz } = position
+    const { x: rx, y: ry, z: rz } = rotation
+    shape.position.set(px, py, pz)
+    shape.rotation.set(rx, ry, rz)
 
-  const mesh = Object.assign(shape, props)
+    shape.receiveShadow = shadow
 
-  meshes.current = { ...meshes.current, [mesh.name]: mesh }
+    const mesh = Object.assign(shape, props)
 
-  return null
+    meshes.current = { ...meshes.current, [mesh.name]: mesh }
+  })
+
+  return <Fragment>{childrenUpdated}</Fragment>
 }
