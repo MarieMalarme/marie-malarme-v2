@@ -4,8 +4,13 @@ import {
   PerspectiveCamera,
   WebGLRenderer,
   BoxGeometry,
+  PlaneGeometry,
+  SphereGeometry,
   MeshNormalMaterial,
+  MeshBasicMaterial,
+  MeshPhongMaterial,
   Mesh as SetMesh,
+  SpotLight as SetSpotLight,
 } from 'three'
 import { Div, Component } from './lib/design.js'
 import { generateId } from './lib/toolbox.js'
@@ -17,7 +22,9 @@ export const Three = () => {
         rotation={{ x: 1, y: 2, z: 3 }}
         position={{ x: 10, y: 20, z: 10 }}
         name="box"
+        material="phong"
       />
+      <SpotLight position={{ x: -40, y: -50, z: 50 }} />
     </Canvas>
   )
 }
@@ -44,7 +51,9 @@ export const Canvas = ({ children = [] }) => {
 
   const animate = () => {
     requestAnimationFrame(animate)
-    const targets = Object.values(meshes.current)
+    const targets = Object.values(meshes.current).filter(
+      (m) => m.type === 'Mesh',
+    )
     targets.map((target) => {
       target.rotation.x += 0.01
       target.rotation.y += 0.01
@@ -79,28 +88,63 @@ const EmptyCanvas = ({ ref }) => (
   </EmptyCanvasWrapper>
 )
 
+// different types of geometry
+const planeGeometry = new PlaneGeometry(15, 15, 15)
 const boxGeometry = new BoxGeometry(15, 15, 15)
+const sphereGeometry = new SphereGeometry(15, 15, 15)
+
+// different types of material
 const normalMaterial = new MeshNormalMaterial()
+const basicMaterial = new MeshBasicMaterial({ color: 0x55ffff })
+const phongMaterial = new MeshPhongMaterial({ color: 0x55ffff })
 
 const coords = { x: 0, y: 0, z: 0 }
+
+export const SpotLight = ({ meshes, name, position = coords, ...props }) => {
+  const { x: px, y: py, z: pz } = position
+  const spotLight = new SetSpotLight(0xffffff)
+  spotLight.position.set(px, py, pz)
+  spotLight.name = name || `spotlight-${generateId()}`
+  spotLight.castShadow = true
+  meshes.current = {
+    ...meshes.current,
+    [spotLight.name]: Object.assign(spotLight, props),
+  }
+  return null
+}
 
 export const Mesh = ({
   meshes,
   name,
-  geometry,
-  material,
+  geometry = boxGeometry,
+  material = normalMaterial,
+  color = 0xad03fc,
   position = coords,
   rotation = coords,
+  shadow = true,
   ...props
 }) => {
-  const geo = geometry || boxGeometry
-  const mat = material || normalMaterial
+  const geo =
+    (geometry === 'cube' && boxGeometry) ||
+    (geometry === 'sphere' && sphereGeometry) ||
+    geometry
+
+  const mat =
+    (material === 'phong' && phongMaterial) ||
+    (material === 'normal' && normalMaterial) ||
+    (material === 'basic' && basicMaterial) ||
+    material
+  mat.color.setHex(color)
+
   const shape = new SetMesh(geo, mat)
+  shape.name = name || `mesh-${generateId()}`
+
   const { x: px, y: py, z: pz } = position
   const { x: rx, y: ry, z: rz } = rotation
   shape.position.set(px, py, pz)
   shape.rotation.set(rx, ry, rz)
-  shape.name = name || generateId()
+
+  shape.receiveShadow = shadow
 
   const mesh = Object.assign(shape, props)
 
