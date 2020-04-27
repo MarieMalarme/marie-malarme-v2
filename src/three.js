@@ -52,9 +52,7 @@ export const Canvas = ({ children = [] }) => {
 
   const animate = () => {
     requestAnimationFrame(animate)
-    const targets = Object.values(meshes.current).filter(
-      (m) => m.type === 'Mesh',
-    )
+    const targets = Object.values(meshes.current).filter((m) => m.animate)
     targets.map((target) => {
       target.rotation.x += 0.01
       target.rotation.y += 0.01
@@ -188,6 +186,7 @@ export const Mesh = ({
   rotation = coords,
   shadow = true,
   center,
+  animate,
   children = [],
   ...props
 }) => {
@@ -215,7 +214,7 @@ export const Mesh = ({
 
     meshes.current = {
       ...meshes.current,
-      [mesh.name]: Object.assign(mesh, props),
+      [mesh.name]: Object.assign(mesh, props, { animate }),
     }
   })
 
