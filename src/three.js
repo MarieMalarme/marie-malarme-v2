@@ -21,14 +21,38 @@ import Murmure from './fonts/Murmure.json'
 export const Three = () => {
   return (
     <Canvas>
-      <Mesh rotation={{ x: 1, y: 2, z: 3 }} name="box">
-        <Text center text="wesh" size={30} />
-        <Material type="normal" />
-      </Mesh>
-      <SpotLight position={{ x: -40, y: -50, z: 50 }} />
+      {projects.map((p, i) => (
+        <ProjectText key={p.name} project={p} i={i} />
+      ))}
     </Canvas>
   )
 }
+
+const ProjectText = ({ project, i, ...props }) => (
+  <Mesh
+    animate={i === 0}
+    key={`mesh${i + 3}`}
+    name={`project-${i + 1}`}
+    position={{ x: 0, y: 0, z: 5 - i * 100 }}
+    {...props}
+  >
+    <Text center text={project.name} size={20} depth={10} />
+    <Material type="normal" />
+  </Mesh>
+)
+
+const projects = [
+  { name: 'Zone 01', img: '01-thumbnail.jpg' },
+  { name: 'Atelier Rusch', img: 'atelier-rusch-thumbnailImage.png' },
+  { name: 'Mikme', img: 'mikme-thumbnailImage.png' },
+  { name: 'La Gaité nomade', img: 'gaite-nomade-thumbnailImage.jpg' },
+  { name: 'Opéra comique', img: 'opera-comique-modaleIntroImage.jpg' },
+  { name: 'Créations & Patrimoines', img: 'c-p-thumbnailImage.jpg' },
+  { name: 'The Peacock Society', img: 'peacock-thumbnailImage.jpg' },
+  { name: 'Plastik', img: 'plastik-thumbnailImage.jpg' },
+  { name: 'Kikoo Docteur', img: 'kikoo-docteur-thumbnailImage.jpg' },
+  { name: 'Laissez-nous loler!', img: 'laissez-nous-loler-thumbnailImage.jpg' },
+]
 
 export const Canvas = ({ children = [] }) => {
   const meshes = useRef()
@@ -37,7 +61,7 @@ export const Canvas = ({ children = [] }) => {
   const scene = new Scene()
   const ratio = window.innerWidth / window.innerHeight
   const camera = new PerspectiveCamera(70, ratio, 0.1, 500)
-  camera.position.set(0, 3, 75)
+  camera.position.set(0, 50, 75)
   camera.lookAt(scene.position)
 
   const renderer = new WebGLRenderer({ alpha: true })
