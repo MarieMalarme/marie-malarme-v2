@@ -16,7 +16,7 @@ import {
   SpotLight as SetSpotLight,
 } from 'three'
 import { Div, Component } from './lib/design.js'
-import { flatten, generateId } from './lib/toolbox.js'
+import { flatten, generateId, random } from './lib/toolbox.js'
 import Murmure from './fonts/Murmure.json'
 
 export const Three = () => {
@@ -28,7 +28,7 @@ export const Three = () => {
           <ProjectImage key={`${p.name}-img`} project={p} i={i} />
         </Fragment>
       ))}
-      <SpotLight position={{ x: 30, y: 0, z: 40 }} />
+      <SpotLight position={{ x: 30, y: 0, z: 150 }} />
     </Canvas>
   )
 }
@@ -45,10 +45,14 @@ const ProjectImage = ({ project, i, ...props }) => {
   return (
     <Mesh
       name={project.name}
-      position={{ x: 0, y: -30, z: 5 - i * 100 }}
+      position={{
+        x: random(-75, 75),
+        y: random(-45, 45),
+        z: 5 - i * 100,
+      }}
       {...props}
     >
-      <Geometry type="plane" />
+      <Geometry type="plane" width={42} />
       <Material texture={url} type="phong" />
     </Mesh>
   )

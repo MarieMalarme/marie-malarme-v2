@@ -11,6 +11,12 @@ export const capitalize = (string) =>
 
 export const array = (number) => [...Array(number).keys()]
 
+export const random = (min, max) => {
+  min = Math.ceil(min)
+  max = Math.floor(max)
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
 export const generate = (data, mapper) => Object.assign(...data.map(mapper))
 
 export const generateId = () =>
