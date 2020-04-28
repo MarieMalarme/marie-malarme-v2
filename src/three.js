@@ -15,14 +15,17 @@ import {
   SpotLight as SetSpotLight,
 } from 'three'
 import { Div, Component } from './lib/design.js'
-import { generateId } from './lib/toolbox.js'
+import { flatten, generateId } from './lib/toolbox.js'
 import Murmure from './fonts/Murmure.json'
 
 export const Three = () => {
   return (
     <Canvas>
       {projects.map((p, i) => (
-        <ProjectText key={p.name} project={p} i={i} />
+        <Fragment key={p.name}>
+          <ProjectText key={`${p.name}-text`} project={p} i={i} />
+          <ProjectImage key={`${p.name}-img`} project={p} i={i} />
+        </Fragment>
       ))}
     </Canvas>
   )
@@ -38,6 +41,13 @@ const ProjectText = ({ project, i, ...props }) => (
   >
     <Text center text={project.name} size={20} depth={10} />
     <Material type="normal" />
+  </Mesh>
+)
+
+const ProjectImage = ({ project, i, ...props }) => (
+  <Mesh {...props}>
+    <Geometry type="plane" />
+    <Material />
   </Mesh>
 )
 
@@ -68,7 +78,7 @@ export const Canvas = ({ children = [] }) => {
   renderer.setClearAlpha(0)
   renderer.setSize(window.innerWidth, window.innerHeight)
 
-  children = Array.isArray(children) ? children : [children]
+  children = flatten(children)
   const childrenUpdated = children.map((child) => ({
     ...child,
     props: { ...child.props, meshes },

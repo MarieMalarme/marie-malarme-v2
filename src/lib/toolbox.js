@@ -1,3 +1,5 @@
+import { Children, Fragment, isValidElement } from 'react'
+
 export const toDashCase = (string) =>
   string
     .split(/(?=[A-Z])/)
@@ -16,3 +18,28 @@ export const generateId = () =>
     .toString(36)
     .slice(2, 7)
     .padEnd(5, '#')
+
+const regex = /[.$]/g
+const clean = (k) => {
+  const key = k
+    .replace(regex, '')
+    .toLowerCase()
+    .split(' ')
+    .join('-')
+  if (key.length < 2) return generateId()
+  return key
+}
+
+const ignored = (node) =>
+  typeof node === 'string' || typeof node === 'number' || !isValidElement(node)
+
+export const flatten = (children) =>
+  Children.toArray(children).reduce((acc, node) => {
+    if (ignored(node)) return acc
+    const { type, props, key } = node
+    const isFragment = type === Fragment
+    const nodes = isFragment
+      ? flatten(props.children)
+      : [{ ...node, key: clean(key) }]
+    return [...acc, ...nodes]
+  }, [])
