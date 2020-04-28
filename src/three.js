@@ -12,6 +12,8 @@ import {
   MeshBasicMaterial,
   MeshPhongMaterial,
   TextureLoader,
+  Raycaster,
+  Vector2,
   Mesh as SetMesh,
   SpotLight as SetSpotLight,
 } from 'three'
@@ -72,6 +74,8 @@ const projects = [
 ]
 
 export const Canvas = ({ children = [] }) => {
+  const mouseCoords = useRef()
+
   const meshes = useRef()
   const ref = useRef()
 
@@ -84,6 +88,9 @@ export const Canvas = ({ children = [] }) => {
   const renderer = new WebGLRenderer({ alpha: true })
   renderer.setClearAlpha(0)
   renderer.setSize(window.innerWidth, window.innerHeight)
+
+  const raycaster = new Raycaster()
+  const mouse = new Vector2()
 
   const updatedChildren = flatten(children).map((child) => ({
     ...child,
@@ -98,6 +105,10 @@ export const Canvas = ({ children = [] }) => {
       target.rotation.y += 0.01
       return target
     })
+    if (mouseCoords.current) {
+      mouse.x = (mouseCoords.current.x / window.innerWidth) * 2 - 1
+      mouse.y = -(mouseCoords.current.y / window.innerHeight) * 2 + 1
+    }
     renderer.render(scene, camera)
   }
 
@@ -112,11 +123,25 @@ export const Canvas = ({ children = [] }) => {
 
   if (!hasChildren) return <EmptyCanvas />
 
-  return <CanvasWrapper reference={ref}>{updatedChildren}</CanvasWrapper>
+  return (
+    <CanvasWrapper mouseCoords={mouseCoords} reference={ref}>
+      {updatedChildren}
+    </CanvasWrapper>
+  )
 }
 
-const CanvasWrapper = ({ reference, children }) => (
-  <div ref={reference}>{children}</div>
+const CanvasWrapper = ({ mouseCoords, reference, children }) => (
+  <div
+    onMouseMove={(e) => {
+      mouseCoords.current = {
+        x: e.nativeEvent.clientX,
+        y: e.nativeEvent.clientY,
+      }
+    }}
+    ref={reference}
+  >
+    {children}
+  </div>
 )
 
 const EmptyCanvasWrapper = Component.lh28.pa100.flex.flexColumn.alignCenter.justifyCenter.bgGrey1.white.div()
