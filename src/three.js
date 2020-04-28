@@ -11,6 +11,7 @@ import {
   MeshNormalMaterial,
   MeshBasicMaterial,
   MeshPhongMaterial,
+  TextureLoader,
   Mesh as SetMesh,
   SpotLight as SetSpotLight,
 } from 'three'
@@ -27,29 +28,31 @@ export const Three = () => {
           <ProjectImage key={`${p.name}-img`} project={p} i={i} />
         </Fragment>
       ))}
+      <SpotLight position={{ x: 30, y: 0, z: 40 }} />
     </Canvas>
   )
 }
 
 const ProjectText = ({ project, i, ...props }) => (
-  <Mesh
-    animate={i === 0}
-    key={`mesh${i + 3}`}
-    name={`project-${i + 1}`}
-    position={{ x: 0, y: 0, z: 5 - i * 100 }}
-    {...props}
-  >
+  <Mesh animate={i === 0} position={{ x: 0, y: 0, z: 5 - i * 100 }} {...props}>
     <Text center text={project.name} size={20} depth={10} />
     <Material type="normal" />
   </Mesh>
 )
 
-const ProjectImage = ({ project, i, ...props }) => (
-  <Mesh {...props}>
-    <Geometry type="plane" />
-    <Material />
-  </Mesh>
-)
+const ProjectImage = ({ project, i, ...props }) => {
+  const url = `https://raw.githubusercontent.com/MarieMalarme/marie-malarme/master/public/img/${project.img}`
+  return (
+    <Mesh
+      name={project.name}
+      position={{ x: 0, y: -30, z: 5 - i * 100 }}
+      {...props}
+    >
+      <Geometry type="plane" />
+      <Material texture={url} type="phong" />
+    </Mesh>
+  )
+}
 
 const projects = [
   { name: 'Zone 01', img: '01-thumbnail.jpg' },
@@ -78,8 +81,7 @@ export const Canvas = ({ children = [] }) => {
   renderer.setClearAlpha(0)
   renderer.setSize(window.innerWidth, window.innerHeight)
 
-  children = flatten(children)
-  const childrenUpdated = children.map((child) => ({
+  const updatedChildren = flatten(children).map((child) => ({
     ...child,
     props: { ...child.props, meshes },
   }))
@@ -106,7 +108,7 @@ export const Canvas = ({ children = [] }) => {
 
   if (!hasChildren) return <EmptyCanvas />
 
-  return <CanvasWrapper reference={ref}>{childrenUpdated}</CanvasWrapper>
+  return <CanvasWrapper reference={ref}>{updatedChildren}</CanvasWrapper>
 }
 
 const CanvasWrapper = ({ reference, children }) => (
@@ -120,16 +122,6 @@ const EmptyCanvas = ({ ref }) => (
     <Div>To start, add a component {`<Mesh />`}</Div>
   </EmptyCanvasWrapper>
 )
-
-// different types of geometry
-const plane = new PlaneGeometry(15, 15, 15)
-const box = new BoxGeometry(15, 15, 15)
-const sphere = new SphereGeometry(15, 15, 15)
-
-// different types of material
-const normalMaterial = new MeshNormalMaterial()
-const basicMaterial = new MeshBasicMaterial({ color: 0x55ffff })
-const phongMaterial = new MeshPhongMaterial({ color: 0x55ffff })
 
 const coords = { x: 0, y: 0, z: 0 }
 
@@ -148,19 +140,6 @@ export const SpotLight = ({
   meshes.current = {
     ...meshes.current,
     [spotLight.name]: Object.assign(spotLight, props),
-  }
-  return null
-}
-
-const Geometry = ({ meshProps, type = box, ...props }) => {
-  const geometry =
-    (type === 'plane' && plane) ||
-    (type === 'cube' && box) ||
-    (type === 'sphere' && sphere) ||
-    type
-  meshProps.current = {
-    ...meshProps.current,
-    geometry: Object.assign(geometry, props),
   }
   return null
 }
@@ -192,19 +171,54 @@ const Text = ({
   return null
 }
 
+const Geometry = ({
+  meshProps,
+  type,
+  width = 25,
+  height = 25,
+  depth = 25,
+  ...props
+}) => {
+  // different types of geometry
+  const plane = new PlaneGeometry(width, height, depth)
+  const box = new BoxGeometry(width, height, depth)
+  const sphere = new SphereGeometry(width, height, depth)
+
+  const geometry =
+    (type === 'plane' && plane) ||
+    (type === 'cube' && box) ||
+    (type === 'sphere' && sphere) ||
+    type
+
+  meshProps.current = {
+    ...meshProps.current,
+    geometry: Object.assign(geometry, props),
+  }
+  return null
+}
+
 const Material = ({
   meshProps,
   type = 'normal',
   color = 'lightblue',
+  texture,
   ...props
 }) => {
+  // different types of material
+  const normalMaterial = new MeshNormalMaterial()
+  const basicMaterial = new MeshBasicMaterial({ color })
+  const phongMaterial = new MeshPhongMaterial({ color })
+
   const material =
-    (type === 'phong' && phongMaterial) ||
     (type === 'normal' && normalMaterial) ||
     (type === 'basic' && basicMaterial) ||
+    (type === 'phong' && phongMaterial) ||
     type
 
-  type !== 'normal' && material.color.set(color)
+  if (texture) {
+    const loader = new TextureLoader().load(texture)
+    material.map = loader
+  }
 
   meshProps.current = {
     ...meshProps.current,
@@ -226,15 +240,14 @@ export const Mesh = ({
 }) => {
   const meshProps = useRef({})
 
-  children = Array.isArray(children) ? children : [children]
-  const childrenUpdated = children.map((child) => ({
+  const updatedChildren = flatten(children).map((child) => ({
     ...child,
     props: { ...child.props, meshProps },
   }))
 
   useEffect(() => {
-    const geo = meshProps.current.geometry || box
-    const mat = meshProps.current.material || normalMaterial
+    const geo = meshProps.current.geometry || new BoxGeometry()
+    const mat = meshProps.current.material || new MeshNormalMaterial()
 
     const mesh = new SetMesh(geo, mat)
     mesh.name = name || `mesh-${generateId()}`
@@ -252,5 +265,5 @@ export const Mesh = ({
     }
   })
 
-  return <Fragment>{childrenUpdated}</Fragment>
+  return <Fragment>{updatedChildren}</Fragment>
 }
