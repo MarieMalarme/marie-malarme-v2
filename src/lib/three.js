@@ -20,9 +20,10 @@ import {
 } from 'three'
 import { Div, Component } from './design.js'
 import { flatten, generateId, findByProp } from './toolbox.js'
+import { events } from './events.js'
 import Murmure from '../fonts/Murmure.json'
 
-export const Canvas = ({ children = [] }) => {
+export const Canvas = ({ children = [], ...props }) => {
   const mouseCoords = useRef()
 
   const meshes = useRef()
@@ -68,6 +69,16 @@ export const Canvas = ({ children = [] }) => {
     Object.values(meshes.current).map((m) => scene.add(m))
     animateFrame()
     ref.current.appendChild(renderer.domElement)
+
+    const listeners = Object.entries(events(props))
+
+    if (listeners.length) {
+      listeners.map(([event, func]) => {
+        window.addEventListener(event, (e) => {
+          func({ e, camera, scene, renderer })
+        })
+      })
+    }
   })
 
   if (!hasChildren) return <EmptyCanvas />

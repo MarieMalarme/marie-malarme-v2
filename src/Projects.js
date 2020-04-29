@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import { Div } from './lib/design'
 import {
   Canvas,
   Mesh,
@@ -23,17 +24,28 @@ const projects = [
   { name: 'Laissez-nous loler!', img: 'laissez-nous-loler-thumbnailImage.jpg' },
 ]
 
+const onWheel = ({ e, camera }) => {
+  const scrollDown = e.deltaY > 0
+  if (scrollDown) {
+    camera.position.z = camera.position.z - 0.5
+  } else {
+    camera.position.z = camera.position.z + 0.5
+  }
+}
+
 export const Projects = () => {
   return (
-    <Canvas>
-      {projects.map((p, i) => (
-        <Fragment key={p.name}>
-          <ProjectText key={`${p.name}-text`} project={p} i={i} />
-          <ProjectImage key={`${p.name}-img`} project={p} i={i} />
-        </Fragment>
-      ))}
-      <SpotLight position={{ x: 30, y: 0, z: 150 }} />
-    </Canvas>
+    <Div fixed>
+      <Canvas onWheel={({ e, camera }) => onWheel({ e, camera })}>
+        {projects.map((p, i) => (
+          <Fragment key={p.name}>
+            <ProjectText key={`${p.name}-text`} project={p} i={i} />
+            <ProjectImage key={`${p.name}-img`} project={p} i={i} />
+          </Fragment>
+        ))}
+        <SpotLight position={{ x: 30, y: 0, z: 150 }} />
+      </Canvas>
+    </Div>
   )
 }
 
