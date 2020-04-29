@@ -8,6 +8,7 @@ import {
   SphereGeometry,
   TextGeometry,
   FontLoader,
+  DoubleSide,
   MeshNormalMaterial,
   MeshBasicMaterial,
   MeshPhongMaterial,
@@ -235,8 +236,8 @@ const Material = ({
 }) => {
   // different types of material
   const normalMaterial = new MeshNormalMaterial()
-  const basicMaterial = new MeshBasicMaterial({ color })
-  const phongMaterial = new MeshPhongMaterial({ color })
+  const basicMaterial = new MeshBasicMaterial({ color, side: DoubleSide })
+  const phongMaterial = new MeshPhongMaterial({ color, side: DoubleSide })
 
   const material =
     (type === 'normal' && normalMaterial) ||
