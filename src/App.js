@@ -3,14 +3,14 @@ import { Component, Code, Div } from './lib/design.js'
 import { colors } from './lib/colors.js'
 import { generated, core } from './lib/style.js'
 
-import './App.css'
+import { Projects } from './Projects.js'
 
-import { Three } from './three.js'
+import './App.css'
 
 const App = () => {
   return (
     <Div>
-      <Three />
+      <Projects />
       <Div pa100>
         <Flags />
         <Colors colors={colors} />
