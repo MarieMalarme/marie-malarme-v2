@@ -33,10 +33,19 @@ const onWheel = ({ e, camera }) => {
   }
 }
 
+export const resize = (camera, renderer) => {
+  camera.aspect = window.innerWidth / window.innerHeight
+  camera.updateProjectionMatrix()
+  renderer.setSize(window.innerWidth, window.innerHeight)
+}
+
 export const Projects = () => {
   return (
     <Div fixed>
-      <Canvas onWheel={({ e, camera }) => onWheel({ e, camera })}>
+      <Canvas
+        onWheel={({ e, camera }) => onWheel({ e, camera })}
+        onResize={({ camera, renderer }) => resize(camera, renderer)}
+      >
         {projects.map((p, i) => (
           <Fragment key={p.name}>
             <ProjectText key={`${p.name}-text`} project={p} i={i} />
