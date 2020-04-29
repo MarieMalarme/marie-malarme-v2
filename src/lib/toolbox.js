@@ -11,6 +11,9 @@ export const capitalize = (string) =>
 
 export const array = (number) => [...Array(number).keys()]
 
+export const findByProp = (prop, object) =>
+  Object.values(object).filter((m) => m[prop])
+
 export const random = (min, max) => {
   min = Math.ceil(min)
   max = Math.floor(max)
