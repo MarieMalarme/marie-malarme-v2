@@ -19,7 +19,7 @@ import {
   SpotLight as SetSpotLight,
 } from 'three'
 import { Div, Component } from './lib/design.js'
-import { flatten, generateId, random } from './lib/toolbox.js'
+import { flatten, generateId, random, findByProp } from './lib/toolbox.js'
 import Murmure from './fonts/Murmure.json'
 
 export const Three = () => {
@@ -36,8 +36,32 @@ export const Three = () => {
   )
 }
 
+const rotate = (mesh, i) => {
+  if (i % 2 === 0) {
+    mesh.rotation.x += 0.001
+    mesh.rotation.y += 0.001
+  } else {
+    mesh.rotation.x += 0.001
+    mesh.rotation.y += 0.001
+  }
+}
+
 const ProjectText = ({ project, i, ...props }) => (
-  <Mesh animate={i === 0} position={{ x: 0, y: 0, z: 5 - i * 100 }} {...props}>
+  <Mesh
+    hover={(mesh) => {
+      rotate(mesh, i)
+      mesh.material = new MeshPhongMaterial({ color: 0x5c5c5c })
+    }}
+    afterHover={(mesh) => {
+      mesh.material = new MeshNormalMaterial()
+    }}
+    animate={(mesh) => {
+      rotate(mesh, i)
+    }}
+    position={{ x: 0, y: 0, z: 5 - i * 150 }}
+    rotation={{ x: random(0, 150), y: random(0, 150), z: 0 }}
+    {...props}
+  >
     <Text center text={project.name} size={20} depth={10} />
     <Material type="normal" />
   </Mesh>
@@ -91,6 +115,7 @@ export const Canvas = ({ children = [] }) => {
   renderer.setSize(window.innerWidth, window.innerHeight)
 
   const raycaster = new Raycaster()
+
   const mouse = new Vector2()
 
   const updatedChildren = flatten(children).map((child) => ({
@@ -100,16 +125,45 @@ export const Canvas = ({ children = [] }) => {
 
   const animate = () => {
     requestAnimationFrame(animate)
-    const targets = Object.values(meshes.current).filter((m) => m.animate)
-    targets.map((target) => {
-      target.rotation.x += 0.01
-      target.rotation.y += 0.01
-      return target
-    })
+
     if (mouseCoords.current) {
       mouse.x = (mouseCoords.current.x / window.innerWidth) * 2 - 1
       mouse.y = -(mouseCoords.current.y / window.innerHeight) * 2 + 1
     }
+
+    const meshesToAnimate = findByProp('animate', meshes.current)
+
+    if (meshesToAnimate.length) {
+      meshesToAnimate.map((m) => {
+        const { animate } = m
+        animate(m)
+      })
+    }
+
+    const meshesToHover = findByProp('hover', meshes.current)
+
+    if (meshesToHover.length) {
+      raycaster.setFromCamera(mouse, camera)
+
+      const hovered = raycaster
+        .intersectObjects(scene.children, true)
+        .filter((c) => c.object.hover)[0]
+
+      const meshesAfterHover = findByProp('afterHover', meshes.current)
+
+      if (hovered) {
+        meshesToHover.map((m) => {
+          const { hover } = m
+          hover(hovered.object)
+        })
+      } else if (meshesAfterHover.length) {
+        meshesAfterHover.map((m) => {
+          const { afterHover } = m
+          afterHover(m)
+        })
+      }
+    }
+
     renderer.render(scene, camera)
   }
 
