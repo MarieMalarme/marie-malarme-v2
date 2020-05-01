@@ -65,10 +65,10 @@ const ProjectText = ({ project, i, ...props }) => (
   <Mesh
     hover={(mesh) => {
       rotate(mesh, i)
-      mesh.material = new MeshPhongMaterial({ color: 0x5c5c5c })
+      mesh.material = new MeshNormalMaterial()
     }}
     afterHover={(mesh) => {
-      mesh.material = new MeshNormalMaterial()
+      mesh.material = new MeshPhongMaterial({ color: 0x5c5c5c })
     }}
     animate={(mesh) => {
       rotate(mesh, i)
@@ -80,7 +80,7 @@ const ProjectText = ({ project, i, ...props }) => (
     {...props}
   >
     <Text center text={project.name} size={20} depth={10} />
-    <Material type="normal" />
+    <Material type="phong" color={0x5c5c5c} />
   </Mesh>
 )
 
@@ -105,8 +105,10 @@ const rotate = (mesh, i) => {
   if (i % 2 === 0) {
     mesh.rotation.x += 0.001
     mesh.rotation.y += 0.001
+    mesh.rotation.z += Math.sin(0.001)
   } else {
     mesh.rotation.x += 0.001
     mesh.rotation.y += 0.001
+    mesh.rotation.z += Math.sin(0.001)
   }
 }
