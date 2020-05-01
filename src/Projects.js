@@ -15,9 +15,14 @@ import { projects } from './projects.data.js'
 
 const onWheel = (e, camera) => {
   const scrollDown = e.deltaY > 0
+  const inViewUp = camera.position.z < 150
+  const inViewDown = camera.position.z > -1500
+
   if (scrollDown) {
+    if (!inViewDown) return
     camera.position.z = camera.position.z - 4
   } else {
+    if (!inViewUp) return
     camera.position.z = camera.position.z + 4
   }
 }
