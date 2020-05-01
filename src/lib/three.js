@@ -31,7 +31,7 @@ export const Canvas = ({ children = [], ...props }) => {
 
   const scene = new Scene()
   const ratio = window.innerWidth / window.innerHeight
-  const camera = new PerspectiveCamera(70, ratio, 1, 1000)
+  const camera = new PerspectiveCamera(70, ratio, 1, 1500)
   camera.position.set(0, 50, 75)
   camera.lookAt(scene.position)
 
