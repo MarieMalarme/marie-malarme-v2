@@ -1,16 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
+
 import { Component, Code, Div } from './lib/design.js'
 import { colors } from './lib/colors.js'
 import { generated, core } from './lib/style.js'
 
 import { Projects } from './Projects.js'
+import { Project } from './Project.js'
 
 import './App.css'
 
 const App = () => {
+  const target = useRef()
+
   return (
     <Div>
-      <Projects />
+      <Projects target={target} />
+      <Project target={target} />
       <Div pa100>
         <Flags />
         <Colors colors={colors} />

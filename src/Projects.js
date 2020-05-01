@@ -13,12 +13,22 @@ import { random } from './lib/toolbox.js'
 
 import { projects } from './projects.data.js'
 
-const onWheel = ({ e, camera }) => {
+const onWheel = (e, camera) => {
   const scrollDown = e.deltaY > 0
   if (scrollDown) {
-    camera.position.z = camera.position.z - 0.5
+    camera.position.z = camera.position.z - 4
   } else {
-    camera.position.z = camera.position.z + 0.5
+    camera.position.z = camera.position.z + 4
+  }
+}
+
+const onClick = (hovered, target) => {
+  if (hovered) {
+    target.current = {
+      name: hovered.object.name,
+      content: hovered.object.content,
+    }
+    window.setTimeout(() => (target.current = undefined), 500)
   }
 }
 
@@ -28,24 +38,23 @@ export const resize = (camera, renderer) => {
   renderer.setSize(window.innerWidth, window.innerHeight)
 }
 
-export const Projects = () => {
-  return (
-    <Div fixed>
-      <Canvas
-        onWheel={({ e, camera }) => onWheel({ e, camera })}
-        onResize={({ camera, renderer }) => resize(camera, renderer)}
-      >
-        {projects.map((p, i) => (
-          <Fragment key={p.name}>
-            <ProjectText key={`${p.name}-text`} project={p} i={i} />
-            <ProjectImage key={`${p.name}-img`} project={p} i={i} />
-          </Fragment>
-        ))}
-        <SpotLight position={{ x: 30, y: 0, z: 150 }} />
-      </Canvas>
-    </Div>
-  )
-}
+export const Projects = ({ target }) => (
+  <Div fixed>
+    <Canvas
+      onWheel={({ e, camera }) => onWheel(e, camera)}
+      onResize={({ camera, renderer }) => resize(camera, renderer)}
+      onClick={({ hovered }) => onClick(hovered, target)}
+    >
+      {projects.map((p, i) => (
+        <Fragment key={p.name}>
+          <ProjectText key={`${p.name}-text`} project={p} i={i} />
+          <ProjectImage key={`${p.name}-img`} project={p} i={i} />
+        </Fragment>
+      ))}
+      <SpotLight position={{ x: 30, y: 0, z: 150 }} />
+    </Canvas>
+  </Div>
+)
 
 const ProjectText = ({ project, i, ...props }) => (
   <Mesh
@@ -61,6 +70,8 @@ const ProjectText = ({ project, i, ...props }) => (
     }}
     position={{ x: 0, y: 0, z: 5 - i * 150 }}
     rotation={{ x: random(0, 150), y: random(0, 150), z: 0 }}
+    name={project.name}
+    content={project.content}
     {...props}
   >
     <Text center text={project.name} size={20} depth={10} />
@@ -72,11 +83,10 @@ const ProjectImage = ({ project, i, ...props }) => {
   const url = `https://raw.githubusercontent.com/MarieMalarme/marie-malarme/master/public/img/${project.img}`
   return (
     <Mesh
-      name={project.name}
       position={{
         x: random(-75, 75),
         y: random(-45, 45),
-        z: 5 - i * 100,
+        z: 5 - i * 150,
       }}
       {...props}
     >
