@@ -25,6 +25,9 @@ export const core = {
   flexColumn: `flex-direction: column`,
   flexRow: `flex-direction: row`,
   bRad50p: `border-radius: 50%`,
+  w100vw: `width: 100vw`,
+  h100vh: `height: 100vh`,
+  heading: `font-size: 100px`,
 }
 
 export const generated = {
