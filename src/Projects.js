@@ -11,18 +11,7 @@ import {
 import { MeshPhongMaterial, MeshNormalMaterial } from 'three'
 import { random } from './lib/toolbox.js'
 
-const projects = [
-  { name: 'Zone 01', img: '01-thumbnail.jpg' },
-  { name: 'Atelier Rusch', img: 'atelier-rusch-thumbnailImage.png' },
-  { name: 'Mikme', img: 'mikme-thumbnailImage.png' },
-  { name: 'La Gaité nomade', img: 'gaite-nomade-thumbnailImage.jpg' },
-  { name: 'Opéra comique', img: 'opera-comique-modaleIntroImage.jpg' },
-  { name: 'Créations & Patrimoines', img: 'c-p-thumbnailImage.jpg' },
-  { name: 'The Peacock Society', img: 'peacock-thumbnailImage.jpg' },
-  { name: 'Plastik', img: 'plastik-thumbnailImage.jpg' },
-  { name: 'Kikoo Docteur', img: 'kikoo-docteur-thumbnailImage.jpg' },
-  { name: 'Laissez-nous loler!', img: 'laissez-nous-loler-thumbnailImage.jpg' },
-]
+import { projects } from './projects.data.js'
 
 const onWheel = ({ e, camera }) => {
   const scrollDown = e.deltaY > 0
