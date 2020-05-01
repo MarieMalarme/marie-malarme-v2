@@ -31,7 +31,7 @@ export const Canvas = ({ children = [], ...props }) => {
 
   const scene = new Scene()
   const ratio = window.innerWidth / window.innerHeight
-  const camera = new PerspectiveCamera(70, ratio, 0.1, 500)
+  const camera = new PerspectiveCamera(70, ratio, 1, 1000)
   camera.position.set(0, 50, 75)
   camera.lookAt(scene.position)
 
@@ -48,8 +48,8 @@ export const Canvas = ({ children = [], ...props }) => {
     props: { ...child.props, meshes },
   }))
 
-  const animateFrame = () => {
-    requestAnimationFrame(animateFrame)
+  const animateScene = () => {
+    requestAnimationFrame(animateScene)
 
     if (mouseCoords.current) {
       mouse.x = (mouseCoords.current.x / window.innerWidth) * 2 - 1
@@ -67,7 +67,7 @@ export const Canvas = ({ children = [], ...props }) => {
   useEffect(() => {
     if (!hasChildren) return
     Object.values(meshes.current).map((m) => scene.add(m))
-    animateFrame()
+    animateScene()
     ref.current.appendChild(renderer.domElement)
 
     const listeners = Object.entries(events(props))
@@ -75,8 +75,15 @@ export const Canvas = ({ children = [], ...props }) => {
     if (listeners.length) {
       listeners.map(([event, func]) => {
         window.addEventListener(event, (e) => {
-          func({ e, camera, scene, renderer })
+          raycaster.setFromCamera(mouse, camera)
+
+          const hovered = raycaster
+            .intersectObjects(scene.children, true)
+            .filter((c) => c.object.hover)[0]
+
+          func({ e, camera, scene, renderer, hovered })
         })
+        return listeners
       })
     }
   })
