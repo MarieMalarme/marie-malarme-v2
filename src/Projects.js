@@ -15,7 +15,7 @@ import { projects } from './projects.data.js'
 
 const onWheel = (e, camera) => {
   const scrollDown = e.deltaY > 0
-  const inViewUp = camera.position.z < 150
+  const inViewUp = camera.position.z < 75
   const inViewDown = camera.position.z > -1500
 
   if (scrollDown) {
@@ -56,33 +56,38 @@ export const Projects = ({ target }) => (
           <ProjectImage key={`${p.name}-img`} project={p} i={i} />
         </Fragment>
       ))}
-      <SpotLight position={{ x: 30, y: 0, z: 150 }} />
+      <SpotLight position={{ x: 30, y: 100, z: 200 }} />
     </Canvas>
   </Div>
 )
 
-const ProjectText = ({ project, i, ...props }) => (
-  <Mesh
-    hover={(mesh) => {
-      rotate(mesh, i)
-      mesh.material = new MeshNormalMaterial()
-    }}
-    afterHover={(mesh) => {
-      mesh.material = new MeshPhongMaterial({ color: 0x5c5c5c })
-    }}
-    animate={(mesh) => {
-      rotate(mesh, i)
-    }}
-    position={{ x: 0, y: 0, z: 5 - i * 150 }}
-    rotation={{ x: random(0, 150), y: random(0, 150), z: 0 }}
-    name={project.name}
-    content={project.content}
-    {...props}
-  >
-    <Text center text={project.name} size={20} depth={10} />
-    <Material type="phong" color={0x5c5c5c} />
-  </Mesh>
-)
+const ProjectText = ({ project, i, ...props }) => {
+  const first = i === 0
+  return (
+    <Mesh
+      hover={(mesh) => {
+        rotate(mesh, i)
+        mesh.material = new MeshNormalMaterial()
+        mesh.animateAfterHover = true
+      }}
+      afterHover={(mesh) => {
+        mesh.material = new MeshPhongMaterial({ color: 0x5c5c5c })
+      }}
+      animate={(mesh) => {
+        if (first || mesh.animateAfterHover) {
+          rotate(mesh, i)
+        }
+      }}
+      position={{ x: 0, y: 0, z: 5 - i * 150 }}
+      name={project.name}
+      content={project.content}
+      {...props}
+    >
+      <Text center text={project.name} size={20} depth={10} />
+      <Material type="phong" color={0x5c5c5c} />
+    </Mesh>
+  )
+}
 
 const ProjectImage = ({ project, i, ...props }) => {
   const url = `https://raw.githubusercontent.com/MarieMalarme/marie-malarme/master/public/img/${project.img}`

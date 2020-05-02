@@ -28,6 +28,11 @@ export const core = {
   w100vw: `width: 100vw`,
   h100vh: `height: 100vh`,
   heading: `font-size: 100px`,
+  noDecoration: `text-decoration: none`,
+  t0: `top: 0`,
+  r0: `right: 0`,
+  b0: `bottom: 0`,
+  l0: `left: 0`,
 }
 
 export const generated = {
@@ -66,7 +71,7 @@ export const generated = {
   cursor: generate(cursors, (c) => ({
     [c]: `cursor: ${toDashCase(c)}`,
   })),
-  lineHeight: generate(array(21), (i) => ({
+  lineHeight: generate(array(41), (i) => ({
     [`lh${i + 10}`]: `line-height: ${i + 10}px`,
   })),
   whiteSpace: generate(whiteSpaces, (w) => ({

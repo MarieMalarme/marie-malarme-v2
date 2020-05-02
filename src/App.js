@@ -1,107 +1,81 @@
-import React, { useState, useRef } from 'react'
+import React, { Fragment, useRef } from 'react'
+import { Router } from '@reach/router'
 
-import { Component, Code, Div } from './lib/design.js'
-import { colors } from './lib/colors.js'
-import { generated, core } from './lib/style.js'
+import { Component, Div } from './lib/design.js'
 
 import { Projects } from './Projects.js'
 import { Project } from './Project.js'
+import { Flags } from './Flags.js'
+import { Colors } from './Colors.js'
 
 import './App.css'
 
 const App = () => {
+  return (
+    <Fragment>
+      <Navigation />
+      <Router>
+        <Home path="/" />
+        <Doc path="/doc" />
+        <About path="/about" />
+      </Router>
+    </Fragment>
+  )
+}
+
+const Home = () => {
   const target = useRef()
 
   return (
     <Div>
+      <Intro />
       <Projects target={target} />
       <Project target={target} />
-      <Div pa100>
-        <Flags />
-        <Colors colors={colors} />
-      </Div>
     </Div>
   )
 }
 
-const FlagWrapper = Component.bb.bGrey6.w100p.animBoxShadow.div()
-const FlagTitle = Component.fs40.murmure.mr20.mb20.div()
-const FlagCode = Component.pv30.ph35.bgGrey2.lh25.div()
-const FlagTab = Component.flex.alignBaseline.pointer.div()
-
-const Flag = ({ title, classes }) => {
-  const [open, setOpen] = useState(false)
-  return (
-    <FlagWrapper className="container" mb50={open} mb25={!open}>
-      <FlagTab onClick={() => setOpen(!open)}>
-        <FlagTitle className="capFirst">
-          {title
-            .split(/(?=[A-Z])/)
-            .join(' ')
-            .toLowerCase()}
-        </FlagTitle>
-        <Div graebenbach>{open ? '— Close' : '+ Open'}</Div>
-      </FlagTab>
-      {open && (
-        <FlagCode>
-          <Code>
-            {Object.entries(classes)
-              .map(([selector, rules]) => `.${selector} { ${rules}; }`)
-              .join('\n')}
-          </Code>
-        </FlagCode>
-      )}
-    </FlagWrapper>
-  )
-}
-
-const Flags = () => (
-  <Div flex flexWrap>
-    <Flag title="Core" classes={core} />
-    {Object.entries(generated).map(([title, classes]) => (
-      <Flag key={title} title={title} classes={classes} />
-    ))}
+const Intro = () => (
+  <Div fixed l0 b0 mb40 ml50 fs15 lh25>
+    <Div>Marie Malarme</Div>
+    <Div>Programming designer</Div>
   </Div>
 )
 
-const Colors = ({ colors }) => (
-  <Div w100p flex flexWrap>
-    {colors.map(([name, value]) => (
-      <Tint name={name} key={name}>
-        <TintCircle value={value} />
-        <TintName>{name}</TintName>
-        <TintValue>
-          {(value.includes('#') && value) || value.split(' ')[2].slice(0, -1)}
-        </TintValue>
-      </Tint>
-    ))}
+const Doc = () => (
+  <Div pa100>
+    <Div heading murmure mb40>
+      Documentation
+    </Div>
+    <Div mb100 lh24>
+      A dedicated design library has been set up to style React components in a
+      flexible and elegant way.
+      <br />
+      CSS classes are dynamically generated in JS, and can be passed as flags to
+      the React components.
+    </Div>
+    <Flags />
+    <Colors />
   </Div>
 )
 
-const Tint = ({ name, children }) => (
-  <TintStyle
-    key={name}
-    style={{
-      width: 'calc(100% / 9)',
-      marginRight: `${(name === 'black' && 'calc((100% / 9 * 7))') || '0'}`,
-    }}
-  >
-    {children}
-  </TintStyle>
+const About = () => (
+  <Div pa100>
+    <Div heading murmure mb40>
+      About
+    </Div>
+  </Div>
 )
 
-const TintCircle = ({ value }) => (
-  <TintCircleStyle
-    style={{
-      boxShadow: '0 0 25px rgba(0, 0, 0, 0.25)',
-      background: value,
-    }}
-  />
+const Navigation = () => (
+  <NavigationWrapper style={{ zIndex: 5 }}>
+    <Link href="/">Home</Link>
+    <Link href="/about">About</Link>
+    <Link href="/doc">Doc</Link>
+  </NavigationWrapper>
 )
 
-const TintStyle = Component.alignCenter.flexColumn.mv35.flex.div()
-const TintName = Component.graebenbach.mt15.div()
-const TintValue = Component.graebenbach.mt5.div()
-const TintCircleStyle = Component.w30.h30.bRad50p.div()
+const NavigationWrapper = Component.pointer.fixed.b0.r0.mb40.mr50.flex.flexColumn.alignFlexEnd.div()
+const Link = Component.fs15.lh25.noDecoration.black.a()
 
 export default App
