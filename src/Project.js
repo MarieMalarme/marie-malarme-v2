@@ -24,7 +24,7 @@ export const Project = ({ target }) => {
       >
         ×
       </Div>
-      <Div murmure heading mb70>
+      <Div heading fs100 mb70>
         {project.name}
       </Div>
       <Div fs30 wsPreLine>

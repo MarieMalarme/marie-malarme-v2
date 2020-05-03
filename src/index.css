@@ -6,7 +6,7 @@
 
 body {
   font-size: 13px;
-  font-family: 'Graebenbach';
+  font-family: 'Archiv';
 }
 
 @font-face {
@@ -15,6 +15,11 @@ body {
 }
 
 @font-face {
-  font-family: 'Graebenbach';
-  src: url('./fonts/Graebenbach.ttf') format('truetype');
+  font-family: 'Archiv';
+  src: url('./fonts/Archiv.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'SpaceMono';
+  src: url('./fonts/SpaceMono.ttf') format('truetype');
 }

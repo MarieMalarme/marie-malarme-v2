@@ -20,14 +20,15 @@ import {
 } from './measures.js'
 
 export const core = {
-  murmure: `font-family: 'Murmure'`,
-  graebenbach: `font-family: 'Graebenbach'`,
+  heading: `font-family: 'Murmure'`,
+  current: `font-family: 'Archiv'`,
+  mono: `font-family: 'SpaceMono'`,
   flexColumn: `flex-direction: column`,
   flexRow: `flex-direction: row`,
   bRad50p: `border-radius: 50%`,
   w100vw: `width: 100vw`,
   h100vh: `height: 100vh`,
-  heading: `font-size: 100px`,
+  fs100: `font-size: 100px`,
   noDecoration: `text-decoration: none`,
   t0: `top: 0`,
   r0: `right: 0`,

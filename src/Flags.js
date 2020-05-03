@@ -22,7 +22,7 @@ const Flag = ({ title, classes }) => {
             .join(' ')
             .toLowerCase()}
         </FlagTitle>
-        <Div graebenbach>{open ? '— Close' : '+ Open'}</Div>
+        <Div>{open ? '— Close' : '+ Open'}</Div>
       </FlagTab>
       {open && (
         <FlagCode>
@@ -38,6 +38,6 @@ const Flag = ({ title, classes }) => {
 }
 
 const FlagWrapper = Component.bb.bGrey6.w100p.animBoxShadow.div()
-const FlagTitle = Component.fs40.murmure.mr20.mb20.div()
+const FlagTitle = Component.fs40.heading.mr20.mb20.div()
 const FlagCode = Component.pv30.ph35.bgGrey2.lh25.div()
 const FlagTab = Component.flex.alignBaseline.pointer.div()

@@ -5,4 +5,4 @@ export const Component = wrapper({ ...flags, consume: true })
 
 export const Div = Component.div()
 export const Span = Component.span()
-export const Code = Component.white.graebenbach.wsPre.code()
+export const Code = Component.white.mono.wsPre.code()

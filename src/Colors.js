@@ -38,6 +38,6 @@ const TintCircle = ({ value }) => (
 )
 
 const TintStyle = Component.alignCenter.flexColumn.mv35.flex.div()
-const TintName = Component.graebenbach.mt15.div()
-const TintValue = Component.graebenbach.mt5.div()
+const TintName = Component.mono.mt15.div()
+const TintValue = Component.mono.mt5.div()
 const TintCircleStyle = Component.w30.h30.bRad50p.div()

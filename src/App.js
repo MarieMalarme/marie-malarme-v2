@@ -44,7 +44,7 @@ const Intro = () => (
 
 const Doc = () => (
   <Div pa100>
-    <Div heading murmure mb40>
+    <Div fs100 heading mb40>
       Documentation
     </Div>
     <Div mb100 lh24>
@@ -61,7 +61,7 @@ const Doc = () => (
 
 const About = () => (
   <Div pa100>
-    <Div heading murmure mb40>
+    <Div fs100 heading mb40>
       About
     </Div>
   </Div>
