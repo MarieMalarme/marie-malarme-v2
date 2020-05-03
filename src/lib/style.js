@@ -84,6 +84,9 @@ export const generated = {
   transition: generate(transitions, (t) => ({
     [`anim${capitalize(t)}`]: `transition: ${toDashCase(t)} 0.2s ease-in-out`,
   })),
+  zIndex: generate(array(21), (i) => ({
+    [`zi${i}`]: `z-index: ${i}`,
+  })),
 }
 
 const classes = { ...core, ...Object.assign({}, ...Object.values(generated)) }
