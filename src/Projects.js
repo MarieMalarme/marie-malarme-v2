@@ -16,7 +16,7 @@ import { projects } from './projects.data.js'
 const setCamera = (e, camera) => {
   const scrollDown = e.deltaY > 0
   const inViewUp = camera.position.z < 75
-  const inViewDown = camera.position.z > -1500
+  const inViewDown = camera.position.z > -1750
 
   if (scrollDown) {
     if (!inViewDown) return
