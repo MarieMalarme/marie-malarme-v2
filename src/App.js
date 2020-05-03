@@ -55,6 +55,7 @@ const Background = ({ target }) => {
 
   return (
     <Div
+      className="fadeIn"
       w100vw
       h100vh
       fixed
