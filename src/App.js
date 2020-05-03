@@ -108,7 +108,7 @@ const Navigation = () => (
   </NavigationWrapper>
 )
 
-const NavigationWrapper = Component.pointer.fixed.b0.r0.mb40.mr50.flex.alignCenter.div()
-const Link = Component.fs20.noDecoration.black.ml30.a()
+const NavigationWrapper = Component.zi5.pointer.fixed.b0.r0.mb40.mr50.flex.alignCenter.div()
+const Link = Component.fs20.noDecoration.mono.grey2.ml30.a()
 
 export default App
