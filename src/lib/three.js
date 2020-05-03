@@ -31,8 +31,8 @@ export const Canvas = ({ children = [], ...props }) => {
 
   const scene = new Scene()
   const ratio = window.innerWidth / window.innerHeight
-  const camera = new PerspectiveCamera(70, ratio, 1, 1500)
-  camera.position.set(0, 50, 75)
+  const camera = new PerspectiveCamera(70, ratio, 1, 600)
+  camera.position.set(0, 0, 75)
   camera.lookAt(scene.position)
 
   const renderer = new WebGLRenderer({ alpha: true })
@@ -134,6 +134,7 @@ const animate = ({ meshes }) => {
 const hover = ({ meshes, raycaster, mouse, camera, scene }) => {
   const meshesToHover = findByProp('hover', meshes.current)
   if (!meshesToHover.length) return
+  if (!mouse.x && !mouse.y) return
 
   raycaster.setFromCamera(mouse, camera)
 
@@ -146,7 +147,7 @@ const hover = ({ meshes, raycaster, mouse, camera, scene }) => {
   if (hovered) {
     meshesToHover.map((m) => {
       const { hover } = m
-      hover(hovered.object)
+      hover(hovered.object, camera)
       return m
     })
   } else if (meshesAfterHover.length) {

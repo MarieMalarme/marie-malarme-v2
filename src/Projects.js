@@ -13,7 +13,7 @@ import { random } from './lib/toolbox.js'
 
 import { projects } from './projects.data.js'
 
-const onWheel = (e, camera) => {
+const setCamera = (e, camera) => {
   const scrollDown = e.deltaY > 0
   const inViewUp = camera.position.z < 75
   const inViewDown = camera.position.z > -1500
@@ -27,17 +27,19 @@ const onWheel = (e, camera) => {
   }
 }
 
-const onClick = (hovered, target) => {
-  if (hovered) {
+const setTarget = (hovered, target) => {
+  if (hovered && hovered.object.hoverable) {
     target.current = {
       name: hovered.object.name,
       content: hovered.object.content,
+      img: hovered.object.img,
     }
-    window.setTimeout(() => (target.current = undefined), 500)
+  } else {
+    target.current = undefined
   }
 }
 
-export const resize = (camera, renderer) => {
+export const setSize = (camera, renderer) => {
   camera.aspect = window.innerWidth / window.innerHeight
   camera.updateProjectionMatrix()
   renderer.setSize(window.innerWidth, window.innerHeight)
@@ -46,14 +48,17 @@ export const resize = (camera, renderer) => {
 export const Projects = ({ target }) => (
   <Div fixed>
     <Canvas
-      onWheel={({ e, camera }) => onWheel(e, camera)}
-      onResize={({ camera, renderer }) => resize(camera, renderer)}
-      onClick={({ hovered }) => onClick(hovered, target)}
+      onWheel={({ e, camera, hovered }) => {
+        setCamera(e, camera)
+        setTarget(hovered, target)
+      }}
+      onResize={({ camera, renderer }) => setSize(camera, renderer)}
+      onMouseMove={({ hovered }) => setTarget(hovered, target)}
+      onClick={({ hovered }) => setTarget(hovered, target)}
     >
       {projects.map((p, i) => (
         <Fragment key={p.name}>
           <ProjectText key={`${p.name}-text`} project={p} i={i} />
-          <ProjectImage key={`${p.name}-img`} project={p} i={i} />
         </Fragment>
       ))}
       <SpotLight position={{ x: 30, y: 100, z: 200 }} />
@@ -65,10 +70,16 @@ const ProjectText = ({ project, i, ...props }) => {
   const first = i === 0
   return (
     <Mesh
-      hover={(mesh) => {
+      hover={(mesh, camera) => {
+        const inView = camera.position.z - mesh.position.z < 175
+        if (!inView) {
+          mesh.hoverable = false
+          return
+        }
         rotate(mesh, i)
         mesh.material = new MeshNormalMaterial()
         mesh.animateAfterHover = true
+        mesh.hoverable = true
       }}
       afterHover={(mesh) => {
         mesh.material = new MeshPhongMaterial({ color: 0x5c5c5c })
@@ -78,8 +89,9 @@ const ProjectText = ({ project, i, ...props }) => {
           rotate(mesh, i)
         }
       }}
-      position={{ x: 0, y: 0, z: 5 - i * 150 }}
+      position={{ x: 0, y: 0, z: -50 - i * 200 }}
       name={project.name}
+      img={project.img}
       content={project.content}
       {...props}
     >
@@ -96,7 +108,7 @@ const ProjectImage = ({ project, i, ...props }) => {
       position={{
         x: random(-75, 75),
         y: random(-45, 45),
-        z: 5 - i * 150,
+        z: -50 - i * 200,
       }}
       {...props}
     >
@@ -107,13 +119,7 @@ const ProjectImage = ({ project, i, ...props }) => {
 }
 
 const rotate = (mesh, i) => {
-  if (i % 2 === 0) {
-    mesh.rotation.x += 0.001
-    mesh.rotation.y += 0.001
-    mesh.rotation.z += Math.sin(0.001)
-  } else {
-    mesh.rotation.x += 0.001
-    mesh.rotation.y += 0.001
-    mesh.rotation.z += Math.sin(0.001)
-  }
+  mesh.rotation.x += 0.001
+  mesh.rotation.y += 0.001
+  mesh.rotation.z += Math.sin(0.001)
 }

@@ -34,6 +34,9 @@ export const core = {
   r0: `right: 0`,
   b0: `bottom: 0`,
   l0: `left: 0`,
+  textLeft: `text-align: left`,
+  textCenter: `text-align: center`,
+  textRight: `text-align: right`,
 }
 
 export const generated = {

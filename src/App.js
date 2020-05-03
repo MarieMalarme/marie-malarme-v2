@@ -1,4 +1,4 @@
-import React, { Fragment, useRef } from 'react'
+import React, { Fragment, useRef, useEffect, useState } from 'react'
 import { Router } from '@reach/router'
 
 import { Component, Div } from './lib/design.js'
@@ -29,18 +29,50 @@ const Home = () => {
   return (
     <Div>
       <Intro />
+      <Background target={target} />
       <Projects target={target} />
       <Project target={target} />
     </Div>
   )
 }
 
+const Background = ({ target }) => {
+  const [project, setProject] = useState(target.current)
+
+  useEffect(() => {
+    if (project) return
+    document.addEventListener('mousemove', () => {
+      setProject(target.current || undefined)
+    })
+    document.addEventListener('wheel', () => {
+      setProject(target.current || undefined)
+    })
+  })
+
+  if (!project) return null
+
+  const url = `https://raw.githubusercontent.com/MarieMalarme/marie-malarme/master/public/img/${project.img}`
+
+  return (
+    <Div
+      w100vw
+      h100vh
+      fixed
+      style={{
+        background: `center / cover url(${url})`,
+      }}
+    />
+  )
+}
+
 const Intro = () => (
-  <Div fixed l0 b0 mb40 ml50 fs15 lh25>
-    <Div>Marie Malarme</Div>
-    <Div>Programming designer</Div>
-  </Div>
+  <IntroText style={{ lineHeight: '120px' }}>
+    Marie Malarme is a Programming designer who loves to create any kind of
+    visual stuff with technology.
+  </IntroText>
 )
+
+const IntroText = Component.fs100.fixed.textCenter.flex.alignCenter.w100p.h100vh.l0.t0.grey7.ph100.div()
 
 const Doc = () => (
   <Div pa100>
@@ -68,14 +100,14 @@ const About = () => (
 )
 
 const Navigation = () => (
-  <NavigationWrapper style={{ zIndex: 5 }}>
+  <NavigationWrapper>
     <Link href="/">Home</Link>
     <Link href="/about">About</Link>
     <Link href="/doc">Doc</Link>
   </NavigationWrapper>
 )
 
-const NavigationWrapper = Component.pointer.fixed.b0.r0.mb40.mr50.flex.flexColumn.alignFlexEnd.div()
-const Link = Component.fs15.lh25.noDecoration.black.a()
+const NavigationWrapper = Component.pointer.fixed.b0.r0.mb40.mr50.flex.alignCenter.div()
+const Link = Component.fs20.noDecoration.black.ml30.a()
 
 export default App
