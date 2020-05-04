@@ -1,49 +1,9 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { Div } from './lib/design'
-import {
-  Canvas,
-  Mesh,
-  Geometry,
-  Material,
-  Text,
-  SpotLight,
-} from './lib/three.js'
+import { Canvas, Mesh, Material, Text, SpotLight } from './lib/three.js'
 import { MeshPhongMaterial, MeshNormalMaterial } from 'three'
-import { random } from './lib/toolbox.js'
 
 import { projects } from './projects.data.js'
-
-const setCamera = (e, camera) => {
-  const scrollDown = e.deltaY > 0
-  const inViewUp = camera.position.z < 75
-  const inViewDown = camera.position.z > -1750
-
-  if (scrollDown) {
-    if (!inViewDown) return
-    camera.position.z = camera.position.z - 4
-  } else {
-    if (!inViewUp) return
-    camera.position.z = camera.position.z + 4
-  }
-}
-
-const setTarget = (hovered, target) => {
-  if (hovered && hovered.object.hoverable) {
-    target.current = {
-      name: hovered.object.name,
-      content: hovered.object.content,
-      img: hovered.object.img,
-    }
-  } else {
-    target.current = undefined
-  }
-}
-
-export const setSize = (camera, renderer) => {
-  camera.aspect = window.innerWidth / window.innerHeight
-  camera.updateProjectionMatrix()
-  renderer.setSize(window.innerWidth, window.innerHeight)
-}
 
 export const Projects = ({ target }) => (
   <Div fixed>
@@ -57,9 +17,7 @@ export const Projects = ({ target }) => (
       onClick={({ hovered }) => setTarget(hovered, target)}
     >
       {projects.map((p, i) => (
-        <Fragment key={p.name}>
-          <ProjectText key={`${p.name}-text`} project={p} i={i} />
-        </Fragment>
+        <ProjectText key={`${p.name}-text`} project={p} i={i} />
       ))}
       <SpotLight position={{ x: 30, y: 100, z: 200 }} />
     </Canvas>
@@ -101,21 +59,36 @@ const ProjectText = ({ project, i, ...props }) => {
   )
 }
 
-const ProjectImage = ({ project, i, ...props }) => {
-  const url = `https://raw.githubusercontent.com/MarieMalarme/marie-malarme/master/public/img/${project.img}`
-  return (
-    <Mesh
-      position={{
-        x: random(-75, 75),
-        y: random(-45, 45),
-        z: -50 - i * 200,
-      }}
-      {...props}
-    >
-      <Geometry type="plane" width={42} />
-      <Material texture={url} type="phong" />
-    </Mesh>
-  )
+const setCamera = (e, camera) => {
+  const scrollDown = e.deltaY > 0
+  const inViewUp = camera.position.z < 75
+  const inViewDown = camera.position.z > -1750
+
+  if (scrollDown) {
+    if (!inViewDown) return
+    camera.position.z = camera.position.z - 4
+  } else {
+    if (!inViewUp) return
+    camera.position.z = camera.position.z + 4
+  }
+}
+
+const setTarget = (hovered, target) => {
+  if (hovered && hovered.object.hoverable) {
+    target.current = {
+      name: hovered.object.name,
+      content: hovered.object.content,
+      img: hovered.object.img,
+    }
+  } else {
+    target.current = undefined
+  }
+}
+
+export const setSize = (camera, renderer) => {
+  camera.aspect = window.innerWidth / window.innerHeight
+  camera.updateProjectionMatrix()
+  renderer.setSize(window.innerWidth, window.innerHeight)
 }
 
 const rotate = (mesh, i) => {
