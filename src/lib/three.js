@@ -16,10 +16,11 @@ import {
   Raycaster,
   Vector2,
   Mesh as SetMesh,
+  Group as SetGroup,
   SpotLight as SetSpotLight,
 } from 'three'
 import { Div, Component } from './design.js'
-import { flatten, generateId, findByProp } from './toolbox.js'
+import { flatten, reduce, generateId, findByProp } from './toolbox.js'
 import { events } from './events.js'
 import Murmure from '../fonts/Murmure.json'
 
@@ -45,7 +46,7 @@ export const Canvas = ({ children = [], ...props }) => {
 
   const updatedChildren = flatten(children).map((child) => ({
     ...child,
-    props: { ...child.props, meshes },
+    props: { ...child.props, meshes, scene },
   }))
 
   const animateScene = () => {
@@ -56,8 +57,10 @@ export const Canvas = ({ children = [], ...props }) => {
       mouse.y = -(mouseCoords.current.y / window.innerHeight) * 2 + 1
     }
 
-    animate({ meshes })
-    hover({ meshes, raycaster, mouse, camera, scene })
+    const allMeshes = reduce(Object.values(meshes.current))
+
+    animate({ meshes: allMeshes })
+    hover({ meshes: allMeshes, raycaster, mouse, camera, scene })
 
     renderer.render(scene, camera)
   }
@@ -120,7 +123,7 @@ const EmptyCanvas = ({ ref }) => (
 )
 
 const animate = ({ meshes }) => {
-  const meshesToAnimate = findByProp('animate', meshes.current)
+  const meshesToAnimate = findByProp('animate', meshes)
 
   if (meshesToAnimate.length) {
     meshesToAnimate.map((m) => {
@@ -132,7 +135,8 @@ const animate = ({ meshes }) => {
 }
 
 const hover = ({ meshes, raycaster, mouse, camera, scene }) => {
-  const meshesToHover = findByProp('hover', meshes.current)
+  const meshesToHover = findByProp('hover', meshes)
+
   if (!meshesToHover.length) return
   if (!mouse.x && !mouse.y) return
 
@@ -142,7 +146,7 @@ const hover = ({ meshes, raycaster, mouse, camera, scene }) => {
     .intersectObjects(scene.children, true)
     .filter((c) => c.object.hover)[0]
 
-  const meshesAfterHover = findByProp('afterHover', meshes.current)
+  const meshesAfterHover = findByProp('afterHover', meshes)
 
   if (hovered) {
     meshesToHover.map((m) => {
@@ -161,7 +165,51 @@ const hover = ({ meshes, raycaster, mouse, camera, scene }) => {
 
 const coords = { x: 0, y: 0, z: 0 }
 
+export const Group = ({
+  scene,
+  meshes,
+  name,
+  position = coords,
+  rotation = coords,
+  shadow = true,
+  animate,
+  children = [],
+  ...props
+}) => {
+  const groupProps = useRef({})
+
+  const updatedChildren = flatten(children).map((child) => ({
+    ...child,
+    props: { ...child.props, groupProps, meshes },
+  }))
+
+  useEffect(() => {
+    const group = new SetGroup()
+    Object.values(groupProps.current).map((m) => {
+      group.add(m)
+      return group
+    })
+
+    group.name = name || `group-${generateId()}`
+
+    const { x: px, y: py, z: pz } = position
+    const { x: rx, y: ry, z: rz } = rotation
+    group.position.set(px, py, pz)
+    group.rotation.set(rx, ry, rz)
+
+    group.receiveShadow = shadow
+
+    meshes.current = {
+      ...meshes.current,
+      [group.name]: Object.assign(group, props, { animate }),
+    }
+  })
+
+  return <Fragment>{updatedChildren}</Fragment>
+}
+
 export const Mesh = ({
+  groupProps,
   meshes,
   name,
   position = coords,
@@ -192,6 +240,14 @@ export const Mesh = ({
     mesh.rotation.set(rx, ry, rz)
 
     mesh.receiveShadow = shadow
+
+    if (groupProps) {
+      groupProps.current = {
+        ...groupProps.current,
+        [mesh.name]: Object.assign(mesh, props, { animate }),
+      }
+      return
+    }
 
     meshes.current = {
       ...meshes.current,

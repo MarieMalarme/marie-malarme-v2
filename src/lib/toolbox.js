@@ -52,3 +52,8 @@ export const flatten = (children) =>
       : [{ ...node, key: clean(key) }]
     return [...acc, ...nodes]
   }, [])
+
+export const reduce = (meshes) =>
+  meshes.reduce((acc, mesh) => {
+    return [...acc, mesh, ...mesh.children]
+  }, [])
