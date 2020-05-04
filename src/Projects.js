@@ -58,11 +58,12 @@ const ProjectMesh = ({ project, i, setTarget, target, ...props }) => {
 
 const Name = ({ name, ...props }) => (
   <Mesh
-    hover={(mesh, camera) => {
-      hover(mesh, camera)
+    hover={(mesh, camera, scene) => {
+      hover(mesh, camera, scene)
     }}
-    afterHover={(mesh) => {
+    afterHover={(mesh, scene) => {
       mesh.material = new MeshPhongMaterial({ color: 0x5c5c5c })
+      toggleVisible(mesh, scene, true)
     }}
     {...props}
   >
@@ -73,8 +74,11 @@ const Name = ({ name, ...props }) => (
 
 const Cache = ({ name, ...props }) => (
   <Mesh
-    hover={(mesh, camera) => {
-      hover(mesh, camera)
+    hover={(mesh, camera, scene) => {
+      hover(mesh, camera, scene)
+    }}
+    afterHover={(mesh, scene) => {
+      toggleVisible(mesh, scene, true)
     }}
     visible={false}
     {...props}
@@ -84,7 +88,14 @@ const Cache = ({ name, ...props }) => (
   </Mesh>
 )
 
-const hover = (mesh, camera) => {
+const toggleVisible = (mesh, scene, toggle) => {
+  const otherMeshes = scene.children.filter(
+    (c) => c.uuid !== mesh.parent.uuid && c.type !== 'SpotLight',
+  )
+  otherMeshes.map((o) => (o.visible = toggle))
+}
+
+const hover = (mesh, camera, scene) => {
   const inView = camera.position.z - mesh.parent.position.z < 200
   if (!inView) {
     mesh.hoverable = false
@@ -96,6 +107,7 @@ const hover = (mesh, camera) => {
   if (mesh.visible) {
     mesh.material = new MeshNormalMaterial()
   }
+  toggleVisible(mesh, scene, false)
 }
 
 const setCamera = (e, camera) => {

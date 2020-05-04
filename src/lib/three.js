@@ -151,13 +151,13 @@ const hover = ({ meshes, raycaster, mouse, camera, scene }) => {
   if (hovered) {
     meshesToHover.map((m) => {
       const { hover } = m
-      hover(hovered.object, camera)
+      hover(hovered.object, camera, scene)
       return m
     })
   } else if (meshesAfterHover.length) {
     meshesAfterHover.map((m) => {
       const { afterHover } = m
-      afterHover(m)
+      afterHover(m, scene)
       return m
     })
   }
