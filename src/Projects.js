@@ -85,7 +85,7 @@ const Cache = ({ name, ...props }) => (
 )
 
 const hover = (mesh, camera) => {
-  const inView = camera.position.z - mesh.parent.position.z < 175
+  const inView = camera.position.z - mesh.parent.position.z < 200
   if (!inView) {
     mesh.hoverable = false
     return
