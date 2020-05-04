@@ -5,16 +5,21 @@ import App from './App'
 import * as serviceWorker from './serviceWorker'
 import { projects } from './projects.data.js'
 
+const head = document.getElementsByTagName('head')[0]
+const store = document.getElementById('store')
+store.style.display = 'none'
+
 const preload = () => {
-  const head = document.getElementsByTagName('head')[0]
   projects.map((p) => {
     const link = document.createElement('link')
     link.href = `https://raw.githubusercontent.com/MarieMalarme/marie-malarme/master/public/img/${p.img}`
-    link.rel = 'prefetch'
+    link.rel = 'preload'
     link.as = 'image'
-    link.crossorigin = 'anonymous'
     head.appendChild(link)
-    return link
+    const img = document.createElement('img')
+    img.src = link.href
+    store.appendChild(img)
+    return img
   })
 }
 
