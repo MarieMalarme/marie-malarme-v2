@@ -16,9 +16,10 @@ import { projects } from './projects.data.js'
 export const Projects = ({ target }) => (
   <Div fixed>
     <Canvas
-      onWheel={({ e, camera, hovered }) => {
+      onWheel={({ e, camera, hovered, scene }) => {
         setCamera(e, camera)
         setTarget(hovered, target)
+        scene.children.map((c) => (c.visible = true))
       }}
       onResize={({ camera, renderer }) => setSize(camera, renderer)}
       onMouseMove={({ hovered }) => setTarget(hovered, target)}
@@ -90,7 +91,11 @@ const Cache = ({ name, ...props }) => (
 
 const toggleVisible = (mesh, scene, toggle) => {
   const otherMeshes = scene.children.filter(
-    (c) => c.uuid !== mesh.parent.uuid && c.type !== 'SpotLight',
+    (c) =>
+      mesh &&
+      mesh.parent &&
+      c.uuid !== mesh.parent.uuid &&
+      c.type !== 'SpotLight',
   )
   otherMeshes.map((o) => (o.visible = toggle))
 }
