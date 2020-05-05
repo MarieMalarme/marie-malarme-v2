@@ -14,24 +14,27 @@ export const Project = ({ target }) => {
   if (!project) return null
 
   return (
-    <Modale relative>
+    <Modale style={{ overflowY: 'scroll' }}>
       <Div
         fs40
-        absolute
+        fixed
         style={{ right: 100, top: 100 }}
         pointer
-        onMouseUp={() => setProject()}
+        onMouseUp={() => {
+          setProject()
+          target.current.modale = false
+        }}
       >
         ×
       </Div>
       <Div heading fs100 mb70>
         {project.name}
       </Div>
-      <Div fs30 wsPreLine>
+      <Div style={{ fontSize: '50px', lineHeight: '75px' }} wsPreLine lh50>
         {project.content}
       </Div>
     </Modale>
   )
 }
 
-const Modale = Component.fixed.w100p.h100vh.pa100.bgWhite.div()
+const Modale = Component.fixed.w100p.h100vh.ph150.pv140.bgWhite.div()

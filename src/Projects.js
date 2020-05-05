@@ -14,16 +14,20 @@ import { MeshPhongMaterial, MeshNormalMaterial } from 'three'
 import { projects } from './projects.data.js'
 
 export const Projects = ({ target }) => (
-  <Div fixed>
+  <Div fixed style={{ overflow: target.current ? 'hidden' : 'auto' }}>
     <Canvas
       onWheel={({ e, camera, hovered, scene }) => {
-        setCamera(e, camera)
+        if (target.current && target.current.modale) return
         setTarget(hovered, target)
+        setCamera(e, camera)
         scene.children.map((c) => (c.visible = true))
       }}
       onResize={({ camera, renderer }) => setSize(camera, renderer)}
-      onMouseMove={({ hovered }) => setTarget(hovered, target)}
-      onClick={({ hovered }) => setTarget(hovered, target)}
+      onMouseMove={({ hovered }) => {
+        if (target.current && target.current.modale) return
+        setTarget(hovered, target)
+      }}
+      onClick={({ hovered }) => setTarget(hovered, target, true)}
     >
       {projects.map((p, i) => (
         <ProjectMesh
@@ -129,12 +133,13 @@ const setCamera = (e, camera) => {
   }
 }
 
-const setTarget = (hovered, target) => {
+const setTarget = (hovered, target, modale) => {
   if (hovered && hovered.object.hoverable) {
     target.current = {
       name: hovered.object.parent.name,
       content: hovered.object.parent.content,
       img: hovered.object.parent.img,
+      modale,
     }
   } else {
     target.current = undefined
