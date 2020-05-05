@@ -1,7 +1,7 @@
 export const projects = [
   {
     name: 'Zone 01',
-    img: '01-thumbnail.jpg',
+    img: '01-introImage.jpg',
     content: `Zone 01 is a worldwide education project developped and led by Nicolas Sadirac, based on his innovative pedagogy model of peer-learning that he formerly implemented in French schools such as Epita, Epitech and 42.
     
     This ambitious initiative aims to spread digital science through a contemporary method of learning, which revolutionizes the conventional descendant ways of aquiring knowledge ; schools all around the globe but no teachers, only students sharing and bringing their own experience to help each other and build common intelligence.
@@ -45,7 +45,7 @@ export const projects = [
   },
   {
     name: 'The Peacock Society',
-    img: 'peacock-thumbnailImage.jpg',
+    img: 'peacock-modaleIntroImage.jpg',
     content: `The Peacock Society is a techno music festival which takes place twice a year in Paris.
     The event offers a musical programming I particularly appreciate, what made me create some posters and a video teaser for the next edition with images I altered through a Processing script.`,
   },
