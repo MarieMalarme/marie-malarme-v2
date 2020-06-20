@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Component, Div } from '../lib/design.js'
 
 export const KeycodesSymphony = () => {
@@ -19,7 +19,7 @@ export const KeycodesSymphony = () => {
     }
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
-  }, [notes.length])
+  }, [notes])
 
   const empty = !notes.length
 
@@ -39,7 +39,12 @@ const Notes = Component.flex.flexWrap.w100p.h100p.div()
 const Note = Component.fs30.flex.alignCenter.justifyCenter.white.div()
 
 const Instruction = (
-  <Div fs100 heading white>
-    Type in something to compose
+  <Div flex flexColumn alignCenter justifyCenter>
+    <Div white heading fs100>
+      Keycodes symphony
+    </Div>
+    <Div fs15 grey5>
+      Type something to compose
+    </Div>
   </Div>
 )

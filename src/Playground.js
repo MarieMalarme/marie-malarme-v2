@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Component, Div } from './lib/design.js'
 
 import { KeycodesSymphony } from './demos/keycodes-symphony.js'
