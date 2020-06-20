@@ -25,6 +25,8 @@ export const core = {
   mono: `font-family: 'SpaceMono'`,
   flexColumn: `flex-direction: column`,
   flexRow: `flex-direction: row`,
+  flexWrap: `flex-wrap: wrap`,
+  flexNoWrap: `flex-wrap: nowrap`,
   bRad50p: `border-radius: 50%`,
   w100vw: `width: 100vw`,
   h100vh: `height: 100vh`,

@@ -7,6 +7,7 @@ import { Projects } from './Projects.js'
 import { Project } from './Project.js'
 import { Flags } from './Flags.js'
 import { Colors } from './Colors.js'
+import { Playground } from './Playground.js'
 
 import './App.css'
 
@@ -18,6 +19,7 @@ const App = () => {
         <Home path="/" />
         <Doc path="/doc" />
         <About path="/about" />
+        <Playground path="/playground" />
       </Router>
     </Fragment>
   )
@@ -105,6 +107,7 @@ const Navigation = () => (
     <Link href="/">Home</Link>
     <Link href="/about">About</Link>
     <Link href="/doc">Doc</Link>
+    <Link href="/playground">Playground</Link>
   </NavigationWrapper>
 )
 
