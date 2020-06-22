@@ -89,6 +89,9 @@ export const generated = {
   zIndex: generate(array(21), (i) => ({
     [`zi${i}`]: `z-index: ${i}`,
   })),
+  opacity: generate(array(21), (i) => ({
+    [`o${i}`]: `opacity: ${i * 5}`,
+  })),
 }
 
 const classes = { ...core, ...Object.assign({}, ...Object.values(generated)) }
