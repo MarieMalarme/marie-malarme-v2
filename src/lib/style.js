@@ -39,6 +39,7 @@ export const core = {
   textLeft: `text-align: left`,
   textCenter: `text-align: center`,
   textRight: `text-align: right`,
+  noSelect: `user-select: none`,
 }
 
 export const generated = {
