@@ -1,12 +1,17 @@
 import React, { useState } from 'react'
 import { Component, Div } from './lib/design.js'
 
+import { MoveAndDraw } from './demos/move-and-draw.js'
 import { KeycodesSymphony } from './demos/keycodes-symphony.js'
 import { MouseTrap } from './demos/mouse-trap.js'
 import { PickAndClick } from './demos/pick-and-click.js'
 import { HarderBiggerBolderStronger } from './demos/harder-bigger-bolder-stronger.js'
 
 const demos = [
+  {
+    name: 'move-and-draw',
+    comp: MoveAndDraw,
+  },
   {
     name: 'keycodes-symphony',
     comp: KeycodesSymphony,
@@ -50,5 +55,5 @@ const Tabs = ({ currentDemo, setCurrentDemo }) => (
   </TabsBar>
 )
 
-const TabsBar = Component.fixed.flex.w100p.justifyBetween.pv50.ph60.div()
+const TabsBar = Component.fixed.flex.w100p.justifyBetween.pv50.ph60.zi5.div()
 const Tab = Component.pointer.bWhite.pb5.white.div()

@@ -24,3 +24,9 @@
     opacity: 1;
   }
 }
+
+canvas#move-and-draw {
+  mix-blend-mode: exclusion;
+  background-color: transparent;
+  position: fixed;
+}
