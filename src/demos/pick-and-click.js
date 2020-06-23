@@ -1,8 +1,10 @@
 import React from 'react'
-import { Div } from '../lib/design.js'
+
+import { Page, Title, Instruction } from './demos.js'
 
 export const PickAndClick = () => (
-  <Div white fs100 heading alignCenter justifyCenter flex w100p h100p>
-    Pick and click
-  </Div>
+  <Page>
+    <Title>Pick and click</Title>
+    <Instruction>Move the mouse — click to pick</Instruction>
+  </Page>
 )

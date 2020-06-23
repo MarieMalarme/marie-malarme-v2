@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
+
 import { toDashCase } from '../lib/toolbox.js'
+
 import { Component, Div } from '../lib/design.js'
+import { Page, Title, Instruction } from './demos.js'
 
 const ranges = [
   { attribute: 'fontSize', min: 50, max: 150 },
@@ -18,12 +21,8 @@ export const HarderBiggerBolderStronger = () => {
 
   return (
     <Page>
-      <Div heading white style={{ ...style }}>
-        Harder, bigger, bolder, stronger
-      </Div>
-      <Div fs15 grey5 o0={dragging}>
-        Slide to customize
-      </Div>
+      <Title style={{ ...style }}>Harder, bigger, bolder, stronger</Title>
+      <Instruction o0={dragging}>Slide to customize</Instruction>
       <Ranges style={{ bottom: '20%' }}>
         {ranges.map((range) => (
           <Range
@@ -38,8 +37,6 @@ export const HarderBiggerBolderStronger = () => {
     </Page>
   )
 }
-
-const Page = Component.flex.flexColumn.alignCenter.justifyCenter.w100p.h100p.div()
 
 const Ranges = Component.flex.w50p.justifyBetween.absolute.div()
 

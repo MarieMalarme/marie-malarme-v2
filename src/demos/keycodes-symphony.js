@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Component, Div } from '../lib/design.js'
+
+import { Component } from '../lib/design.js'
+import { Page, Title, Instruction } from './demos.js'
 
 export const KeycodesSymphony = () => {
   const [notes, setNotes] = useState([])
@@ -25,7 +27,13 @@ export const KeycodesSymphony = () => {
 
   return (
     <Notes alignCenter={empty} justifyCenter={empty}>
-      {empty && Instruction}
+      {empty && (
+        <Page>
+          <Title>Keycodes symphony</Title>
+          <Instruction>Type anything to compose</Instruction>
+          />
+        </Page>
+      )}
       {notes.map(({ key, color }, i) => (
         <Note key={`key${i}`} style={{ background: color, flex: 1 }}>
           {key}
@@ -37,14 +45,3 @@ export const KeycodesSymphony = () => {
 
 const Notes = Component.flex.flexWrap.w100p.h100p.div()
 const Note = Component.fs30.flex.alignCenter.justifyCenter.white.div()
-
-const Instruction = (
-  <Div flex flexColumn alignCenter justifyCenter>
-    <Div white heading fs100>
-      Keycodes symphony
-    </Div>
-    <Div fs15 grey5>
-      Type something to compose
-    </Div>
-  </Div>
-)

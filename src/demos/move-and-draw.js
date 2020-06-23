@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import { random } from '../lib/toolbox.js'
 
-import { Component, Div } from '../lib/design.js'
+import { Page, Title, Instruction } from './demos.js'
 
 export const MoveAndDraw = () => {
   const [canvas, setCanvas] = useState(null)
@@ -35,12 +35,8 @@ export const MoveAndDraw = () => {
 
   return (
     <Page>
-      <Div white heading fs100>
-        Move and draw
-      </Div>
-      <Div fs15 grey5>
-        Move the mouse — click to start over
-      </Div>
+      <Title>Move and draw</Title>
+      <Instruction>Move the mouse — click to start over</Instruction>
       <canvas
         id="move-and-draw"
         ref={setCanvas}
@@ -51,8 +47,6 @@ export const MoveAndDraw = () => {
     </Page>
   )
 }
-
-const Page = Component.flex.alignCenter.justifyCenter.flexColumn.w100vw.h100vh.div()
 
 let hue1 = 0
 let hue2 = 150

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Component, Div } from '../lib/design.js'
+
+import { Component } from '../lib/design.js'
+import { Page, Title, Instruction } from './demos.js'
 
 export const MouseTrap = () => {
   const [circles, setCircles] = useState({})
@@ -57,19 +59,15 @@ export const MouseTrap = () => {
   }, [circles, hasEntered, limits])
 
   return (
-    <Div alignCenter justifyCenter flex w100p h100p>
+    <Page>
       <Box elemRef={setBox}>
-        <Div heading fs100 white>
-          Mouse trap
-        </Div>
-        <Div fs15 grey5>
-          Click anywhere and move
-        </Div>
+        <Title>Mouse trap</Title>
+        <Instruction>Click anywhere and move</Instruction>
       </Box>
       {Object.values(circles).map((circle, i) => (
         <Circle key={`circle-${i}`} style={{ ...circle }} />
       ))}
-    </Div>
+    </Page>
   )
 }
 
