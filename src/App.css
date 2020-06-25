@@ -30,3 +30,8 @@ canvas#move-and-draw {
   background-color: transparent;
   position: fixed;
 }
+
+#gravity {
+  background: transparent;
+  mix-blend-mode: exclusion;
+}

@@ -6,23 +6,28 @@ import { KeycodesSymphony } from './demos/keycodes-symphony.js'
 import { MouseTrap } from './demos/mouse-trap.js'
 import { PickAndClick } from './demos/pick-and-click.js'
 import { HarderBiggerBolderStronger } from './demos/harder-bigger-bolder-stronger.js'
+import { Gravity } from './demos/gravity.js'
 
 const demos = [
   {
-    name: 'move-and-draw',
-    comp: MoveAndDraw,
+    name: 'gravity',
+    comp: Gravity,
   },
   {
     name: 'keycodes-symphony',
     comp: KeycodesSymphony,
   },
   {
-    name: 'mouse-trap',
-    comp: MouseTrap,
-  },
-  {
     name: 'pick-and-click',
     comp: PickAndClick,
+  },
+  {
+    name: 'move-and-draw',
+    comp: MoveAndDraw,
+  },
+  {
+    name: 'mouse-trap',
+    comp: MouseTrap,
   },
   {
     name: 'harder-bigger-bolder-stronger',
@@ -32,17 +37,22 @@ const demos = [
 
 export const Playground = () => {
   const [currentDemo, setCurrentDemo] = useState(demos[0])
+  const [tabs, setTabs] = useState(null)
   const Demo = currentDemo.comp
   return (
     <Div w100vw h100vh bgGrey1>
-      <Tabs currentDemo={currentDemo} setCurrentDemo={setCurrentDemo} />
-      <Demo />
+      <Tabs
+        elemRef={setTabs}
+        currentDemo={currentDemo}
+        setCurrentDemo={setCurrentDemo}
+      />
+      <Demo tabs={tabs} />
     </Div>
   )
 }
 
-const Tabs = ({ currentDemo, setCurrentDemo }) => (
-  <TabsBar>
+const Tabs = ({ currentDemo, setCurrentDemo, ...props }) => (
+  <TabsBar {...props}>
     {demos.map((demo) => (
       <Tab
         onClick={() => setCurrentDemo(demo)}
