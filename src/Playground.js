@@ -7,15 +7,20 @@ import { MouseTrap } from './demos/mouse-trap.js'
 import { PickAndClick } from './demos/pick-and-click.js'
 import { HarderBiggerBolderStronger } from './demos/harder-bigger-bolder-stronger.js'
 import { Gravity } from './demos/gravity.js'
+import { TypeVisualization } from './demos/type-visualization.js'
 
 const demos = [
   {
-    name: 'gravity',
-    comp: Gravity,
+    name: 'type-visualization',
+    comp: TypeVisualization,
   },
   {
     name: 'keycodes-symphony',
     comp: KeycodesSymphony,
+  },
+  {
+    name: 'gravity',
+    comp: Gravity,
   },
   {
     name: 'pick-and-click',
