@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react'
+import { random } from '../lib/toolbox.js'
 
 import { Component } from '../lib/design.js'
 import { Page, Title, Instruction } from './demos.js'
+
+const radius = 35
 
 export const MouseTrap = () => {
   const [circles, setCircles] = useState({})
@@ -21,8 +24,10 @@ export const MouseTrap = () => {
       setCircles({
         ...circles,
         [`circle${Object.values(circles).length}`]: {
-          top: clientY - 25,
-          left: clientX - 25,
+          top: clientY - radius,
+          left: clientX - radius,
+          color: `hsl(${random(0, 360)}, 50%, 70%)`,
+          background: `radial-gradient(white 10%, transparent 60%)`,
         },
       })
     }
@@ -35,8 +40,8 @@ export const MouseTrap = () => {
     if (!length) return
     const moveCircle = ({ clientX, clientY }) => {
       const [top, right, bottom, left] = limits
-      const insideX = clientX > left + 25 && clientX < right - 25
-      const insideY = clientY > top + 25 && clientY < bottom - 25
+      const insideX = clientX > left + radius && clientX < right - radius
+      const insideY = clientY > top + radius && clientY < bottom - radius
       const isInside = insideX && insideY
 
       isInside && setHasEntered(true)
@@ -45,12 +50,16 @@ export const MouseTrap = () => {
       const canMoveY = (hasEntered && insideY) || !hasEntered
       const canMoveX = (hasEntered && insideX) || !hasEntered
 
+      const color = hasEntered ? circles[currentCircle].color : 'white'
+      const gradient = `radial-gradient(${color} 10%, transparent 60%)`
+
       setCircles({
         ...circles,
         [currentCircle]: {
-          top: (canMoveY && clientY - 25) || circles[currentCircle].top,
-          left: (canMoveX && clientX - 25) || circles[currentCircle].left,
-          background: hasEntered ? 'var(--purple4)' : 'white',
+          ...circles[currentCircle],
+          top: (canMoveY && clientY - radius) || circles[currentCircle].top,
+          left: (canMoveX && clientX - radius) || circles[currentCircle].left,
+          background: gradient,
         },
       })
     }
@@ -72,4 +81,4 @@ export const MouseTrap = () => {
 }
 
 const Box = Component.w35p.h30p.ba.bWhite.alignCenter.justifyCenter.flex.flexColumn.div()
-const Circle = Component.bRad50p.absolute.bgWhite.w50.h50.div()
+const Circle = Component.bRad50p.absolute.bgWhite.w70.h70.div()
