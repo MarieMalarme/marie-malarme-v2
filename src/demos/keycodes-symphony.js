@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import { random } from '../lib/toolbox.js'
 
-import { Component, Div } from '../lib/design.js'
+import { Component } from '../lib/design.js'
 import { Page, Title, Instruction } from './demos.js'
 
 export const KeycodesSymphony = () => {
@@ -46,16 +46,16 @@ export const KeycodesSymphony = () => {
 
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
-  }, [length, vertical])
+  }, [length, vertical, notes])
 
   const empty = !length
 
   useEffect(() => {
     if (empty) return
     const notes = [...document.querySelectorAll('.note')]
-    const target = notes[notes.length - 1]
+    const target = notes[length - 1]
     target.scrollIntoView({ behavior: 'smooth' })
-  }, [length])
+  }, [length, empty])
 
   return (
     <Notes flexColumn={vertical} alignCenter={empty} justifyCenter={empty}>
