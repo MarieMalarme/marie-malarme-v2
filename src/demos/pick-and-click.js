@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
-import { Component, Div } from '../lib/design.js'
-import { Page, Title, Instruction } from './demos.js'
+import { Div } from '../lib/design.js'
+import { Page, Title, Instruction, Mode } from './demos.js'
 
 const modes = ['vertical', 'horizontal', '35deg']
 
@@ -74,15 +74,3 @@ const Modes = ({ repeat, setRepeat, mode, setMode }) => (
     <Mode caption="increase" onClick={() => setRepeat(repeat + 1)} />
   </Div>
 )
-
-const Mode = ({ caption, onClick, selected }) => (
-  <Control onClick={onClick}>
-    <Dot />
-    <Div pb5 bGrey3 bb={selected}>
-      {caption}
-    </Div>
-  </Control>
-)
-
-const Control = Component.pointer.noSelect.flex.flexColumn.alignCenter.textCenter.w100.div()
-const Dot = Component.w10.h10.mb15.bgGrey2.bRad50p.div()
