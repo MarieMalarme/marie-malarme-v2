@@ -1,47 +1,90 @@
 import React, { useState, useEffect } from 'react'
 
-import { Component } from '../lib/design.js'
+import { random } from '../lib/toolbox.js'
+
+import { Component, Div } from '../lib/design.js'
 import { Page, Title, Instruction } from './demos.js'
 
 export const KeycodesSymphony = () => {
   const [notes, setNotes] = useState([])
+  const [vertical, setVertical] = useState(true)
+
+  const { length } = notes
 
   useEffect(() => {
     const handleKey = ({ key }) => {
-      if (key === 'Backspace') {
-        setNotes(notes.slice(0, notes.length - 1))
-        return
-      } else if (key === 'Escape') {
-        setNotes([])
-        return
+      if (length) {
+        if (key === 'Control') {
+          setVertical(!vertical)
+          return
+        }
+        if (key === 'Escape') {
+          setNotes([])
+          return
+        }
+        if (key === 'Backspace') {
+          if (!length) return
+          setNotes(notes.slice(0, length - 1))
+          return
+        }
       }
+
+      const enter = key === 'Enter'
       const number = key.charCodeAt(0) * 2 - 150
-      const color = `hsl(270, ${number}%, ${number}%)`
-      setNotes([...notes, { key, color }])
+      const saturation = (enter && 100) || (number > 0 && number) || 30
+      const color = `hsl(${random(0, 360)}, ${saturation}%, 70%)`
+
+      setNotes([
+        ...notes,
+        {
+          color,
+          key: (enter && 'Pause') || key,
+          width: (enter && '100%') || '20%',
+        },
+      ])
     }
+
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
-  }, [notes])
+  }, [length, vertical])
 
-  const empty = !notes.length
+  const empty = !length
+
+  useEffect(() => {
+    if (empty) return
+    const notes = [...document.querySelectorAll('.note')]
+    const target = notes[notes.length - 1]
+    target.scrollIntoView({ behavior: 'smooth' })
+  }, [length])
 
   return (
-    <Notes alignCenter={empty} justifyCenter={empty}>
+    <Notes flexColumn={vertical} alignCenter={empty} justifyCenter={empty}>
       {empty && (
         <Page>
           <Title>Keycodes symphony</Title>
-          <Instruction>Type anything to compose</Instruction>
-          />
+          <Instruction>
+            Type to compose — Press Ctrl to change orientation
+          </Instruction>
         </Page>
       )}
-      {notes.map(({ key, color }, i) => (
-        <Note key={`key${i}`} style={{ background: color, flex: 1 }}>
-          {key}
-        </Note>
-      ))}
+      {notes.map(({ key, color, width, first }, i) => {
+        return (
+          <Note
+            className="note"
+            key={`key${i}`}
+            style={{
+              background: color,
+              flex: `1 1 ${width}`,
+              minHeight: '100px',
+            }}
+          >
+            {key}
+          </Note>
+        )
+      })}
     </Notes>
   )
 }
 
 const Notes = Component.flex.flexWrap.w100p.h100p.div()
-const Note = Component.fs30.flex.alignCenter.justifyCenter.white.div()
+const Note = Component.fs30.flex.alignCenter.justifyCenter.white.pa15.div()
