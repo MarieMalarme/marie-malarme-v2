@@ -8,6 +8,8 @@ import {
   whiteSpaces,
   transitions,
   directions,
+  overflows,
+  wordBreaks,
 } from './css.js'
 
 import { colors } from './colors.js'
@@ -92,6 +94,12 @@ export const generated = {
   })),
   opacity: generate(array(21), (i) => ({
     [`o${i}`]: `opacity: ${i * 5}`,
+  })),
+  overflow: generate(overflows, (o) => ({
+    [`of${capitalize(o)}`]: `overflow: ${o}`,
+  })),
+  wordBreak: generate(wordBreaks, (w) => ({
+    [`wb${capitalize(w)}`]: `word-break: ${toDashCase(w)}`,
   })),
 }
 

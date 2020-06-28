@@ -71,3 +71,7 @@ export const transitions = [
   'boxShadow',
   'border',
 ]
+
+export const overflows = ['visible', 'hidden', 'clip', 'scroll', 'auto']
+
+export const wordBreaks = ['normal', 'breakAll', 'keepAll', 'breakWord']
