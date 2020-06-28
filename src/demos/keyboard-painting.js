@@ -10,11 +10,12 @@ const rows = [...keySets, 'Space']
 
 const increment = 25
 
-export const TypeVisualization = () => {
+export const KeyboardPainting = ({ tabs }) => {
   const [circles, setCircles] = useState([])
   const [text, setText] = useState('')
   const [typing, setTyping] = useState(false)
   const [mode, setMode] = useState('multiple')
+  const [guides, setGuides] = useState(true)
 
   const multiple = mode === 'multiple'
 
@@ -61,22 +62,48 @@ export const TypeVisualization = () => {
         setText('')
         multiple ? setCircles([]) : resetCircles()
       }
+
+      if (key === 'Enter') {
+        setGuides(!guides)
+      }
     }
 
     document.addEventListener('keydown', handleControls)
     return () => document.removeEventListener('keydown', handleControls)
-  }, [text, multiple, circles])
+  }, [text, multiple, circles, guides])
+
+  useEffect(() => {
+    if (!tabs) return
+
+    document.body.style.overflow = text.length ? 'hidden' : 'auto'
+
+    const otherTabs = [...tabs.children].filter(
+      (t) => t.textContent !== 'keyboard-painting',
+    )
+
+    const setAuto = () => {
+      document.body.style.overflow = 'auto'
+    }
+
+    otherTabs.forEach((tab) => tab.addEventListener('click', setAuto))
+    return () =>
+      otherTabs.forEach((tab) => tab.removeEventListener('click', setAuto))
+  }, [tabs, text])
 
   return (
-    <Page noSelect>
-      <Title style={{ wordBreak: 'break-all' }} w90p textCenter zi5>
-        {text || 'Type visualization'}
-      </Title>
-      {!text && (
-        <Instruction zi5>Type anything — Press Escape to clear</Instruction>
+    <Page noSelect ofHidden>
+      {guides && (
+        <Title wbBreakAll w90p textCenter zi5>
+          {text || 'Keyboard painting'}
+        </Title>
       )}
-      <Keyboard rows={rows} multiple={multiple} />
-      <Modes mode={mode} setMode={setMode} />
+      {!text && (
+        <Instruction zi5>
+          Type where you want to paint — Escape to clear & Enter to guides
+        </Instruction>
+      )}
+      <Keyboard rows={rows} multiple={multiple} guides={guides} />
+      <Modes mode={mode} setMode={setMode} guides={guides} />
       {circles.map((circle, i) => (
         <Circle key={`circle-${i}`} style={{ ...circle }} />
       ))}
@@ -84,13 +111,17 @@ export const TypeVisualization = () => {
   )
 }
 
-const Keyboard = ({ rows, multiple }) => (
-  <Keys>
-    {rows.map((row, i) => (
-      <Letters row={row} multiple={multiple} key={i} />
-    ))}
-  </Keys>
-)
+const Keyboard = ({ rows, multiple, guides }) => {
+  if (!guides) return null
+
+  return (
+    <Keys>
+      {rows.map((row, i) => (
+        <Letters row={row} multiple={multiple} key={i} />
+      ))}
+    </Keys>
+  )
+}
 
 const Letters = ({ row, multiple }) => (
   <Row>
@@ -119,19 +150,22 @@ const Circle = Component.zi10.absolute.bRad50p.bgPurple5.div()
 
 const modes = ['multiple', 'single']
 
-const Modes = ({ mode, setMode }) => (
-  <Div flex fixed style={{ bottom: '250px' }}>
-    {modes.map((m) => (
-      <Mode
-        key={m}
-        clear
-        caption={m}
-        selected={m === mode}
-        onClick={() => setMode(m)}
-      />
-    ))}
-  </Div>
-)
+const Modes = ({ mode, setMode, guides }) => {
+  if (!guides) return null
+  return (
+    <Div flex fixed style={{ bottom: '250px' }}>
+      {modes.map((m) => (
+        <Mode
+          key={m}
+          clear
+          caption={m}
+          selected={m === mode}
+          onClick={() => setMode(m)}
+        />
+      ))}
+    </Div>
+  )
+}
 
 const getBackground = (key) => {
   const keys = keySets.join().split('')

@@ -7,12 +7,12 @@ import { MouseTrap } from './demos/mouse-trap.js'
 import { PickAndClick } from './demos/pick-and-click.js'
 import { HarderBiggerBolderStronger } from './demos/harder-bigger-bolder-stronger.js'
 import { Gravity } from './demos/gravity.js'
-import { TypeVisualization } from './demos/type-visualization.js'
+import { KeyboardPainting } from './demos/keyboard-painting.js'
 
 const demos = [
   {
-    name: 'type-visualization',
-    comp: TypeVisualization,
+    name: 'keyboard-painting',
+    comp: KeyboardPainting,
   },
   {
     name: 'keycodes-symphony',
