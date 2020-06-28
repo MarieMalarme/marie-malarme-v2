@@ -39,11 +39,11 @@ export const KeyboardPainting = ({ tabs }) => {
       setTyping(true)
       setText(`${text}${key}`)
 
-      const background = getBackground(key)
+      const { gradient } = getColor(key)
 
       multiple
-        ? setCircles([...circles, newCircle(circles, key, space, background)])
-        : increaseCircle(space, key, background)
+        ? setCircles([...circles, newCircle(circles, key, space, gradient)])
+        : increaseCircle(space, key, gradient)
 
       setTyping(false)
     }
@@ -130,6 +130,7 @@ const Letters = ({ row, multiple, guides }) => (
       row.split('').map((key) => (
         <Key id={key} key={key} style={{ width: '9%' }} ba={guides}>
           <Letter o0={!guides}>{key}</Letter>
+          <Dot style={{ background: getColor(key).color }} />
           {!multiple && <Circle className="circle" id={`circle-${key}`} />}
         </Key>
       ))}
@@ -139,14 +140,16 @@ const Letters = ({ row, multiple, guides }) => (
 const Space = ({ multiple, guides }) => (
   <Key id="Space" style={{ width: '45%' }} ba={guides}>
     <Letter o0={!guides}>Space</Letter>
+    <Dot style={{ background: getColor().color }} />
     {!multiple && <Circle className="circle" id="circle-Space" />}
   </Key>
 )
 
 const Keys = Component.pv100.absolute.h100p.w100p.flex.flexColumn.justifyCenter.div()
 const Row = Component.flex.ma5.h30p.justifyCenter.div()
-const Key = Component.ma5.w100p.h100p.flex.alignCenter.justifyCenter.div()
+const Key = Component.ma5.w100p.h100p.flex.alignCenter.justifyCenter.flexColumn.textCenter.div()
 const Letter = Component.zi15.fs20.animateColor.div()
+const Dot = Component.w5.h5.bRad50p.mt10.div()
 const Circle = Component.zi10.absolute.bRad50p.bgPurple5.div()
 
 const modes = ['multiple', 'single']
@@ -168,14 +171,14 @@ const Modes = ({ mode, setMode, guides }) => {
   )
 }
 
-const getBackground = (key) => {
+const getColor = (key) => {
   const keys = keySets.join().split('')
   const currentKey = keys.indexOf(key)
   const lastKey = keys.length - 1
   const hue = (360 * currentKey) / lastKey
   const color = `hsl(${hue}, 50%, 50%)`
-  const background = `radial-gradient(${color} 10%, transparent 60%)`
-  return background
+  const gradient = `radial-gradient(${color} 10%, transparent 60%)`
+  return { color, gradient }
 }
 
 const newCircle = (circles, key, space, background) => {
