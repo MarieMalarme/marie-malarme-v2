@@ -26,6 +26,11 @@ export const KeyboardPainting = ({ tabs }) => {
   }, [mode])
 
   useEffect(() => {
+    if (text.length) return
+    setGuides(true)
+  }, [text])
+
+  useEffect(() => {
     const handleKey = ({ key, keyCode }) => {
       if (typing) return
       const space = keyCode === 32
@@ -99,7 +104,7 @@ export const KeyboardPainting = ({ tabs }) => {
       )}
       {!text && (
         <Instruction zi5>
-          Type where you want to paint — Escape to clear & Enter to guides
+          Type where you want to paint — Escape to clear & Enter to hide guides
         </Instruction>
       )}
       <Keyboard rows={rows} multiple={multiple} guides={guides} />
@@ -111,41 +116,37 @@ export const KeyboardPainting = ({ tabs }) => {
   )
 }
 
-const Keyboard = ({ rows, multiple, guides }) => {
-  if (!guides) return null
+const Keyboard = ({ rows, multiple, guides }) => (
+  <Keys>
+    {rows.map((row, i) => (
+      <Letters row={row} multiple={multiple} guides={guides} key={i} />
+    ))}
+  </Keys>
+)
 
-  return (
-    <Keys>
-      {rows.map((row, i) => (
-        <Letters row={row} multiple={multiple} key={i} />
-      ))}
-    </Keys>
-  )
-}
-
-const Letters = ({ row, multiple }) => (
+const Letters = ({ row, multiple, guides }) => (
   <Row>
-    {(row === 'Space' && <Space multiple={multiple} />) ||
+    {(row === 'Space' && <Space guides={guides} multiple={multiple} />) ||
       row.split('').map((key) => (
-        <Key id={key} key={key} style={{ width: '9%' }}>
-          <Letter>{key}</Letter>
+        <Key id={key} key={key} style={{ width: '9%' }} ba={guides}>
+          <Letter o0={!guides}>{key}</Letter>
           {!multiple && <Circle className="circle" id={`circle-${key}`} />}
         </Key>
       ))}
   </Row>
 )
 
-const Space = ({ multiple }) => (
-  <Key id="Space" style={{ width: '45%' }}>
-    <Letter>Space</Letter>
+const Space = ({ multiple, guides }) => (
+  <Key id="Space" style={{ width: '45%' }} ba={guides}>
+    <Letter o0={!guides}>Space</Letter>
     {!multiple && <Circle className="circle" id="circle-Space" />}
   </Key>
 )
 
 const Keys = Component.pv100.absolute.h100p.w100p.flex.flexColumn.justifyCenter.div()
 const Row = Component.flex.ma5.h30p.justifyCenter.div()
-const Key = Component.ba.ma5.w100p.h100p.flex.alignCenter.justifyCenter.div()
-const Letter = Component.zi15.fs20.div()
+const Key = Component.ma5.w100p.h100p.flex.alignCenter.justifyCenter.div()
+const Letter = Component.zi15.fs20.animateColor.div()
 const Circle = Component.zi10.absolute.bRad50p.bgPurple5.div()
 
 const modes = ['multiple', 'single']
