@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { random } from '../lib/toolbox.js'
 
-import { Component, Div } from '../lib/design.js'
+import { Component } from '../lib/design.js'
 import { Title, Instruction } from './demos.js'
 
 const diameter = 100
