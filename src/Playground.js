@@ -8,8 +8,13 @@ import { PickAndClick } from './demos/pick-and-click.js'
 import { HarderBiggerBolderStronger } from './demos/harder-bigger-bolder-stronger.js'
 import { Gravity } from './demos/gravity.js'
 import { KeyboardPainting } from './demos/keyboard-painting.js'
+import { ScrollWall } from './demos/scroll-wall.js'
 
 const demos = [
+  {
+    name: 'scroll-wall',
+    comp: ScrollWall,
+  },
   {
     name: 'keyboard-painting',
     comp: KeyboardPainting,
