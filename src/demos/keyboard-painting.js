@@ -130,7 +130,7 @@ const Letters = ({ row, multiple, guides }) => (
       row.split('').map((key) => (
         <Key id={key} key={key} style={{ width: '9%' }} ba={guides}>
           <Letter o0={!guides}>{key}</Letter>
-          <Dot style={{ background: getColor(key).color }} />
+          <Dot o0={!guides} style={{ background: getColor(key).color }} />
           {!multiple && <Circle className="circle" id={`circle-${key}`} />}
         </Key>
       ))}

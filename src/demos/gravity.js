@@ -3,7 +3,7 @@ import { Body, Engine, Render, World, Bodies } from 'matter-js'
 
 import { random } from '../lib/toolbox.js'
 
-import { Div } from '../lib/design.js'
+import { Component } from '../lib/design.js'
 import { Page, Title, Instruction } from './demos.js'
 
 // TO DO: resize canvas on window resize:
@@ -135,9 +135,11 @@ export const Gravity = ({ tabs }) => {
     <Page>
       <Title>Gravity</Title>
       <Instruction>Move to affect the gravity — click to expand</Instruction>
-      <Div fixed id="gravity" elemRef={setCanvas} />
+      <Canvas id="gravity" elemRef={setCanvas} />
     </Page>
   )
 }
+
+const Canvas = Component.w100p.h100vh.fixed.div()
 
 const getPos = (pos, max, scale) => (pos / max) * scale - scale / 2
