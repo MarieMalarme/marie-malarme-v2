@@ -9,8 +9,13 @@ import { HarderBiggerBolderStronger } from './demos/harder-bigger-bolder-stronge
 import { Gravity } from './demos/gravity.js'
 import { KeyboardPainting } from './demos/keyboard-painting.js'
 import { ScrollWall } from './demos/scroll-wall.js'
+import { Rotation } from './demos/rotation.js'
 
 const demos = [
+  {
+    name: 'rotation',
+    comp: Rotation,
+  },
   {
     name: 'scroll-wall',
     comp: ScrollWall,
