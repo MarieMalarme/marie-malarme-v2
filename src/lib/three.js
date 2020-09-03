@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef } from 'react'
+import React, { Fragment, useEffect, useState, useRef } from 'react'
 import {
   Scene,
   PerspectiveCamera,
@@ -28,7 +28,7 @@ export const Canvas = ({ children = [], ...props }) => {
   const mouseCoords = useRef()
 
   const meshes = useRef()
-  const ref = useRef()
+  const [ref, setRef] = useState(null)
 
   const scene = new Scene()
   const ratio = window.innerWidth / window.innerHeight
@@ -68,10 +68,10 @@ export const Canvas = ({ children = [], ...props }) => {
   const hasChildren = children.length
 
   useEffect(() => {
-    if (!hasChildren) return
+    if (!hasChildren || !ref) return
     Object.values(meshes.current).map((m) => scene.add(m))
     animateScene()
-    ref.current.appendChild(renderer.domElement)
+    ref.appendChild(renderer.domElement)
 
     const listeners = Object.entries(events(props))
 
@@ -94,7 +94,7 @@ export const Canvas = ({ children = [], ...props }) => {
   if (!hasChildren) return <EmptyCanvas />
 
   return (
-    <CanvasWrapper mouseCoords={mouseCoords} reference={ref}>
+    <CanvasWrapper mouseCoords={mouseCoords} reference={setRef}>
       {updatedChildren}
     </CanvasWrapper>
   )
@@ -115,7 +115,7 @@ const CanvasWrapper = ({ mouseCoords, reference, children }) => (
 )
 
 const EmptyCanvasWrapper = Component.lh28.pa100.flex.flexColumn.alignCenter.justifyCenter.bgGrey1.white.div()
-const EmptyCanvas = ({ ref }) => (
+const EmptyCanvas = () => (
   <EmptyCanvasWrapper>
     <Div>Nothing yet in your canvas !</Div>
     <Div>To start, add a component {`<Mesh />`}</Div>
