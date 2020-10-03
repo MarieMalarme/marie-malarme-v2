@@ -19,7 +19,7 @@ export const Projects = ({ target }) => (
       onWheel={({ e, camera, hovered, scene }) => {
         if (target.current && target.current.modale) return
         setTarget(hovered, target)
-        setCamera(e, camera)
+        setCamera(e, camera, scene)
         scene.children.map((c) => (c.visible = true))
       }}
       onResize={({ camera, renderer }) => setSize(camera, renderer)}
@@ -38,17 +38,15 @@ export const Projects = ({ target }) => (
           target={target}
         />
       ))}
-      <Light
-        type="directional"
-        position={{ x: 0, y: 200, z: 100 }}
-        color="blue"
-      />
-
-      <Light
-        type="directional"
-        position={{ x: 300, y: -200, z: 100 }}
-        color="red"
-      />
+      {lights.map(({ hue, x, y, z }, i) => (
+        <Light
+          type="directional"
+          position={{ x, y, z }}
+          color={`hsl(${hue * 360}, 100%, 50%)`}
+          name={`light-${i}`}
+          key={`light-${i}`}
+        />
+      ))}
     </Canvas>
   </Div>
 )
@@ -56,9 +54,11 @@ export const Projects = ({ target }) => (
 const ProjectMesh = ({ project, i, setTarget, target, ...props }) => {
   const first = i === 0
   const { name } = project
+
   return (
     <Group
       position={{ x: 0, y: 0, z: -50 - i * 200 }}
+      rotation={(first && { x: 0.5, y: 0.5, z: 0.5 }) || { x: 0, y: 0, z: 0 }}
       animate={(mesh) => (first || mesh.animateAfterHover) && rotate(mesh)}
       name={name}
       {...props}
@@ -76,6 +76,7 @@ const Name = ({ name, ...props }) => (
     }}
     afterHover={(mesh, scene) => {
       toggleVisible(mesh, scene, true)
+      document.body.style.cursor = 'default'
     }}
     {...props}
   >
@@ -117,19 +118,27 @@ const hover = (mesh, camera, scene) => {
     mesh.hoverable = false
     return
   }
+  document.body.style.cursor = 'pointer'
   rotate(mesh.parent)
   mesh.parent.animateAfterHover = true
   mesh.hoverable = true
-  if (mesh.visible) {
-    mesh.material = new MeshNormalMaterial()
-  }
   toggleVisible(mesh, scene, false)
 }
 
-const setCamera = (e, camera) => {
+const setCamera = (e, camera, scene) => {
   const scrollDown = e.deltaY > 0
   const inViewUp = camera.position.z < 75
   const inViewDown = camera.position.z > -1750
+
+  const sceneLights = scene.children.filter((c) => c.type.includes('Light'))
+
+  sceneLights.map((light, i) => {
+    const hue = lights[i].hue + count
+    const saturation = 1
+    const luminosity = 0.5
+    light.color.setHSL(hue, saturation, luminosity)
+  })
+  count += 0.003
 
   if (scrollDown) {
     if (!inViewDown) return
@@ -158,7 +167,15 @@ export const setSize = (camera, renderer) => {
 }
 
 const rotate = (mesh) => {
-  mesh.rotation.x += 0.001
-  mesh.rotation.y += 0.001
-  mesh.rotation.z += Math.sin(0.001)
+  mesh.rotation.x += 0.0005
+  mesh.rotation.z += Math.sin(0.0005)
 }
+
+const lights = [
+  { hue: 0.5, x: 0, y: 100, z: 100 },
+  { hue: 0.3, x: 200, y: 200, z: 25 },
+  { hue: 0, x: 100, y: 0, z: 50 },
+  { hue: 0.75, x: -100, y: -100, z: 75 },
+]
+
+let count = 0
