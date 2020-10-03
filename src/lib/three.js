@@ -17,7 +17,9 @@ import {
   Vector2,
   Mesh as SetMesh,
   Group as SetGroup,
-  SpotLight as SetSpotLight,
+  AmbientLight,
+  DirectionalLight,
+  SpotLight,
 } from 'three'
 import { Div, Component } from './design.js'
 import { flatten, reduce, generateId, findByProp } from './toolbox.js'
@@ -46,7 +48,7 @@ export const Canvas = ({ children = [], ...props }) => {
 
   const updatedChildren = flatten(children).map((child) => ({
     ...child,
-    props: { ...child.props, meshes, scene },
+    props: { ...child.props, meshes, scene, camera },
   }))
 
   const animateScene = () => {
@@ -166,7 +168,6 @@ const hover = ({ meshes, raycaster, mouse, camera, scene }) => {
 const coords = { x: 0, y: 0, z: 0 }
 
 export const Group = ({
-  scene,
   meshes,
   name,
   position = coords,
@@ -258,6 +259,12 @@ export const Mesh = ({
   return <Fragment>{updatedChildren}</Fragment>
 }
 
+const geometries = {
+  plane: PlaneGeometry,
+  box: BoxGeometry,
+  sphere: SphereGeometry,
+}
+
 export const Geometry = ({
   meshProps,
   type,
@@ -266,22 +273,19 @@ export const Geometry = ({
   depth = 25,
   ...props
 }) => {
-  // different types of geometry
-  const plane = new PlaneGeometry(width, height, depth)
-  const box = new BoxGeometry(width, height, depth)
-  const sphere = new SphereGeometry(width, height, depth)
-
-  const geometry =
-    (type === 'plane' && plane) ||
-    (type === 'cube' && box) ||
-    (type === 'sphere' && sphere) ||
-    type
+  const geometry = new geometries[type](width, height, depth)
 
   meshProps.current = {
     ...meshProps.current,
     geometry: Object.assign(geometry, props),
   }
   return null
+}
+
+const materials = {
+  normal: MeshNormalMaterial,
+  basic: MeshBasicMaterial,
+  phong: MeshPhongMaterial,
 }
 
 export const Material = ({
@@ -291,16 +295,7 @@ export const Material = ({
   texture,
   ...props
 }) => {
-  // different types of material
-  const normalMaterial = new MeshNormalMaterial()
-  const basicMaterial = new MeshBasicMaterial({ color, side: DoubleSide })
-  const phongMaterial = new MeshPhongMaterial({ color, side: DoubleSide })
-
-  const material =
-    (type === 'normal' && normalMaterial) ||
-    (type === 'basic' && basicMaterial) ||
-    (type === 'phong' && phongMaterial) ||
-    type
+  const material = new materials[type]({ color, side: DoubleSide })
 
   if (texture) {
     const loader = new TextureLoader().load(texture)
@@ -341,22 +336,29 @@ export const Text = ({
   return null
 }
 
-export const SpotLight = ({
+const lights = {
+  ambient: AmbientLight,
+  directional: DirectionalLight,
+  spot: SpotLight,
+}
+
+export const Light = ({
   meshes,
   name,
   color = 'white',
   position = coords,
+  type = 'directional',
   ...props
 }) => {
   const { x, y, z } = position
-  const spotLight = new SetSpotLight(color)
-  spotLight.position.set(x, y, z)
-  spotLight.name = name || `spotlight-${generateId()}`
-  spotLight.castShadow = true
+  const light = new lights[type](color)
+  light.position.set(x, y, z)
+  light.name = name || `light-${generateId()}`
+  light.castShadow = true
 
   meshes.current = {
     ...meshes.current,
-    [spotLight.name]: Object.assign(spotLight, props),
+    [light.name]: Object.assign(light, props),
   }
   return null
 }

@@ -7,7 +7,7 @@ import {
   Geometry,
   Material,
   Text,
-  SpotLight,
+  Light,
 } from './lib/three.js'
 import { MeshPhongMaterial, MeshNormalMaterial } from 'three'
 
@@ -38,7 +38,17 @@ export const Projects = ({ target }) => (
           target={target}
         />
       ))}
-      <SpotLight position={{ x: 30, y: 100, z: 200 }} />
+      <Light
+        type="directional"
+        position={{ x: 0, y: 200, z: 100 }}
+        color="blue"
+      />
+
+      <Light
+        type="directional"
+        position={{ x: 300, y: -200, z: 100 }}
+        color="red"
+      />
     </Canvas>
   </Div>
 )
@@ -99,7 +109,7 @@ const toggleVisible = (mesh, scene, toggle) => {
       mesh &&
       mesh.parent &&
       c.uuid !== mesh.parent.uuid &&
-      c.type !== 'SpotLight',
+      !c.type.includes('Light'),
   )
   otherMeshes.map((o) => (o.visible = toggle))
 }
