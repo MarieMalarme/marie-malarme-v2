@@ -55,14 +55,12 @@ export const Projects = ({ target }) => (
 
 const ProjectMesh = ({ project, i, setTarget, target, ...props }) => {
   const first = i === 0
-  const { name, content, img } = project
+  const { name } = project
   return (
     <Group
       position={{ x: 0, y: 0, z: -50 - i * 200 }}
       animate={(mesh) => (first || mesh.animateAfterHover) && rotate(mesh)}
       name={name}
-      img={img}
-      content={content}
       {...props}
     >
       <Cache name={name} {...props} />
@@ -77,13 +75,12 @@ const Name = ({ name, ...props }) => (
       hover(mesh, camera, scene)
     }}
     afterHover={(mesh, scene) => {
-      mesh.material = new MeshPhongMaterial({ color: 0x5c5c5c })
       toggleVisible(mesh, scene, true)
     }}
     {...props}
   >
     <Text center text={name} size={20} depth={10} />
-    <Material type="phong" color={0x5c5c5c} />
+    <Material type="phong" />
   </Mesh>
 )
 
@@ -147,8 +144,6 @@ const setTarget = (hovered, target, modale) => {
   if (hovered && hovered.object.hoverable) {
     target.current = {
       name: hovered.object.parent.name,
-      content: hovered.object.parent.content,
-      img: hovered.object.parent.img,
       modale,
     }
   } else {

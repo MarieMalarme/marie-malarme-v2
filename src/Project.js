@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Component, Div } from './lib/design.js'
+import { projects } from './projects.data.js'
 
 export const Project = ({ target }) => {
   const [project, setProject] = useState(target.current)
@@ -12,6 +13,8 @@ export const Project = ({ target }) => {
   })
 
   if (!project) return null
+
+  const selectedProject = projects.find(({ name }) => name === project.name)
 
   return (
     <Modale style={{ overflowY: 'scroll' }}>
@@ -28,10 +31,10 @@ export const Project = ({ target }) => {
         ×
       </Div>
       <Div heading fs100 mb70>
-        {project.name}
+        {selectedProject.name}
       </Div>
       <Div style={{ fontSize: '50px', lineHeight: '75px' }} wsPreLine lh50>
-        {project.content}
+        {selectedProject.content}
       </Div>
     </Modale>
   )

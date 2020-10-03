@@ -11,19 +11,19 @@ import { Playground } from './Playground.js'
 
 import './App.css'
 
-const App = () => {
-  return (
-    <Fragment>
-      <Navigation />
-      <Router>
-        <Home path="/" />
-        <Doc path="/doc" />
-        <About path="/about" />
-        <Playground path="/playground" />
-      </Router>
-    </Fragment>
-  )
-}
+import { projects } from './projects.data.js'
+
+const App = () => (
+  <Fragment>
+    <Navigation />
+    <Router>
+      <Home path="/" />
+      <Doc path="/doc" />
+      <About path="/about" />
+      <Playground path="/playground" />
+    </Router>
+  </Fragment>
+)
 
 const Home = () => {
   const target = useRef()
@@ -38,8 +38,19 @@ const Home = () => {
   )
 }
 
+const imgURL = (img) =>
+  `https://raw.githubusercontent.com/MarieMalarme/marie-malarme/master/public/img/${img}`
+
+const preloadImages = () =>
+  projects.map((p) => {
+    const image = new Image()
+    image.src = imgURL(p.img)
+  })
+
 const Background = ({ target }) => {
   const [project, setProject] = useState(target.current)
+
+  useEffect(() => preloadImages)
 
   useEffect(() => {
     if (project) return
@@ -53,7 +64,8 @@ const Background = ({ target }) => {
 
   if (!project) return null
 
-  const url = `https://raw.githubusercontent.com/MarieMalarme/marie-malarme/master/public/img/${project.img}`
+  const selectedProject = projects.find(({ name }) => name === project.name)
+  const url = imgURL(selectedProject.img)
 
   return (
     <Div
