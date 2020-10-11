@@ -12,20 +12,20 @@ import {
 
 import { projects } from './projects.data.js'
 
-export const Projects = memo(({ setState }) => (
+export const Projects = memo(({ setProject }) => (
   <Div fixed>
     <Canvas
       onWheel={({ e, camera, hovered, scene }) => {
-        setProject(setState, hovered)
+        setHoveredProject(setProject, hovered)
         setCamera(e, camera, scene)
         scene.children.forEach((c) => (c.visible = true))
       }}
       onResize={({ camera, renderer }) => setSize(camera, renderer)}
       onMouseMove={({ hovered }) => {
-        setProject(setState, hovered)
+        setHoveredProject(setProject, hovered)
       }}
       onClick={({ hovered }) => {
-        setProject(setState, hovered, true)
+        setHoveredProject(setProject, hovered, true)
       }}
     >
       {projects.map((p, i) => (
@@ -140,14 +140,14 @@ const setCamera = (e, camera, scene) => {
   }
 }
 
-const setProject = (setState, hovered, modale) => {
+const setHoveredProject = (setProject, hovered, modale) => {
   if (hovered && hovered.object.hoverable) {
-    setState({
+    setProject({
       name: hovered.object.parent.name,
       modale,
     })
   } else {
-    setState(null)
+    setProject(null)
   }
 }
 

@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { Component, Div } from './lib/design.js'
 import { projects } from './projects.data.js'
 
-export const Project = ({ state, setState }) => {
-  if (!state || !state.modale) return null
-  const selectedProject = projects.find(({ name }) => name === state.name)
+export const Project = ({ project, setProject }) => {
+  if (!project || !project.modale) return null
+  const selectedProject = projects.find(({ name }) => name === project.name)
 
   return (
     <Modale className="fadeInFast" style={{ overflowY: 'scroll' }} id="modale">
-      <Close style={{ right: 100, top: 100 }} onMouseUp={() => setState()}>
+      <Close style={{ right: 100, top: 100 }} onMouseUp={() => setProject()}>
         ×
       </Close>
       <Div heading fs100 mb70>

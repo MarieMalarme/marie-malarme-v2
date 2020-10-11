@@ -26,23 +26,23 @@ const App = () => (
 )
 
 const Home = () => {
-  const [state, setState] = useState(null)
+  const [project, setProject] = useState(null)
   useEffect(() => preloadImages)
 
   return (
     <Div>
       <Intro />
-      <Background state={state} setState={setState} />
-      <Projects setState={setState} />
-      <Project state={state} setState={setState} />
+      <Background project={project} setProject={setProject} />
+      <Projects setProject={setProject} />
+      <Project project={project} setProject={setProject} />
     </Div>
   )
 }
 
-const Background = ({ state, setState }) => {
-  if (!state) return null
+const Background = ({ project, setProject }) => {
+  if (!project) return null
 
-  const selectedProject = projects.find(({ name }) => name === state.name)
+  const selectedProject = projects.find(({ name }) => name === project.name)
   const url = imgURL(selectedProject.img)
 
   return (
