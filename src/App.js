@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import { Router } from '@reach/router'
 
 import { Component, Div } from './lib/design.js'
+import { getProjectKey } from './lib/toolbox.js'
 
 import { Projects } from './Projects.js'
 import { Project } from './Project.js'
@@ -42,8 +43,8 @@ const Home = () => {
 const Background = ({ project, setProject }) => {
   if (!project) return null
 
-  const selectedProject = projects.find(({ name }) => name === project.name)
-  const url = imgURL(selectedProject.img)
+  const key = getProjectKey(project.name)
+  const url = `/img/${key}/${key}-preview.jpg`
 
   return (
     <Div
@@ -51,9 +52,7 @@ const Background = ({ project, setProject }) => {
       w100vw
       h100vh
       fixed
-      style={{
-        background: `center / cover url(${url})`,
-      }}
+      style={{ background: `center / cover url(${url})` }}
     />
   )
 }
@@ -100,14 +99,21 @@ const Navigation = () => (
 )
 
 const preloadImages = () => {
-  projects.forEach((p) => {
-    const image = new Image()
-    image.src = imgURL(p.img)
+  projects.forEach(({ name, visuals }) => {
+    const key = getProjectKey(name)
+
+    const previewImage = new Image()
+    previewImage.src = `/img/${key}/${key}-preview.jpg`
+
+    visuals.slides.forEach((extension, i) => {
+      const slideImage = new Image()
+      slideImage.src = `/img/${key}/${key}-slide-${i + 1}.${extension}`
+    })
+
+    const introImage = new Image()
+    introImage.src = `/img/${key}/${key}-intro.${visuals.intro}`
   })
 }
-
-const imgURL = (img) =>
-  `https://raw.githubusercontent.com/MarieMalarme/marie-malarme/master/public/img/${img}`
 
 const NavigationWrapper = Component.zi5.pointer.fixed.b0.r0.mb40.mr50.flex.alignCenter.div()
 const Link = Component.fs20.noDecoration.mono.grey2.ml30.a()

@@ -54,6 +54,7 @@ const ProjectMesh = ({ project, i, ...props }) => {
       rotation={(first && { x: 0.5, y: 0.5, z: 0.5 }) || { x: 0, y: 0, z: 0 }}
       animate={(mesh) => (first || mesh.animateAfterHover) && rotate(mesh)}
       name={name}
+      project={project}
       {...props}
     >
       <Cache name={name} {...props} />
@@ -143,7 +144,7 @@ const setCamera = (e, camera, scene) => {
 const setHoveredProject = (setProject, hovered, modale) => {
   if (hovered && hovered.object.hoverable) {
     setProject({
-      name: hovered.object.parent.name,
+      ...hovered.object.parent.project,
       modale,
     })
   } else {

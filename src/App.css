@@ -72,3 +72,8 @@ canvas#move-and-draw {
     background-size: 200px 200px;
   }
 }
+
+img,
+video {
+  margin-top: -4px;
+}

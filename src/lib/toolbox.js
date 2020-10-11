@@ -23,18 +23,11 @@ export const random = (min, max) => {
 export const generate = (data, mapper) => Object.assign(...data.map(mapper))
 
 export const generateId = () =>
-  Math.random()
-    .toString(36)
-    .slice(2, 7)
-    .padEnd(5, '#')
+  Math.random().toString(36).slice(2, 7).padEnd(5, '#')
 
 const regex = /[.$]/g
 const clean = (k) => {
-  const key = k
-    .replace(regex, '')
-    .toLowerCase()
-    .split(' ')
-    .join('-')
+  const key = k.replace(regex, '').toLowerCase().split(' ').join('-')
   if (key.length < 2) return generateId()
   return key
 }
@@ -57,3 +50,11 @@ export const reduce = (meshes) =>
   meshes.reduce((acc, mesh) => {
     return [...acc, mesh, ...mesh.children]
   }, [])
+
+export const getProjectKey = (name) =>
+  name
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .split(' ')
+    .join('_')
