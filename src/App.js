@@ -1,14 +1,13 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import { Router } from '@reach/router'
 
-import { Component, Div } from './lib/design.js'
+import { Component, Div, Span } from './lib/design.js'
 import { getProjectKey } from './lib/toolbox.js'
 
 import { Projects } from './Projects.js'
 import { Project } from './Project.js'
 import { Flags } from './Flags.js'
 import { Colors } from './Colors.js'
-import { Playground } from './Playground.js'
 
 import './App.css'
 
@@ -21,7 +20,6 @@ const App = () => (
       <Home path="/" />
       <Doc path="/doc" />
       <About path="/about" />
-      <Playground path="/playground" />
     </Router>
   </Fragment>
 )
@@ -69,7 +67,7 @@ const Doc = () => (
     <Div fs100 heading mb40>
       Documentation
     </Div>
-    <Div mb100 lh24>
+    <Div fs20 mb90 lh30>
       A dedicated design library has been set up to style React components in a
       flexible and elegant way.
       <br />
@@ -77,14 +75,25 @@ const Doc = () => (
       the React components.
     </Div>
     <Flags />
+    <Div bb bGrey6 mt100 pb20 fs40 heading mr20 mb20>
+      Colors
+    </Div>
     <Colors />
   </Div>
 )
 
 const About = () => (
   <Div pa100>
-    <Div fs100 heading mb40>
+    <Div fs100 heading mb50>
       About
+    </Div>
+    <Div fs30 style={{ lineHeight: '42px' }}>
+      I'm currently working between Paris & Lisbon on an exciting pedagogic
+      software to learn Programming to people, but I'm always interested in
+      taking part to great projects of any kind to explore further directions.
+      <br />
+      <br />
+      You can reach me on my email <Span bb>malarmemarie@gmail.com</Span>
     </Div>
   </Div>
 )
@@ -94,7 +103,6 @@ const Navigation = () => (
     <Link href="/">Home</Link>
     <Link href="/about">About</Link>
     <Link href="/doc">Doc</Link>
-    <Link href="/playground">Playground</Link>
   </NavigationWrapper>
 )
 
