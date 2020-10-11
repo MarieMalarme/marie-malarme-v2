@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Component, Div } from './lib/design.js'
 import { projects } from './projects.data.js'
 
@@ -14,12 +14,12 @@ export const Project = ({ project, setProject }) => {
       <Div heading fs100 mb70>
         {selectedProject.name}
       </Div>
-      <Div style={{ fontSize: '50px', lineHeight: '75px' }} wsPreLine lh50>
+      <Div style={{ fontSize: '48px', lineHeight: '75px' }} wsPreLine lh50>
         {selectedProject.content}
       </Div>
     </Modale>
   )
 }
 
-const Modale = Component.fixed.w100p.h100vh.ph150.pv140.bgWhite.div()
+const Modale = Component.fixed.w100p.h100vh.ph150.pv140.bgGrey1.grey8.div()
 const Close = Component.fs40.fixed.pointer.div()

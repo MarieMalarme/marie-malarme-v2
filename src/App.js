@@ -1,4 +1,4 @@
-import React, { Fragment, useRef, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { Router } from '@reach/router'
 
 import { Component, Div } from './lib/design.js'
@@ -60,7 +60,7 @@ const Background = ({ project, setProject }) => {
 
 const Intro = () => (
   <IntroText style={{ lineHeight: '120px' }}>
-    Marie Malarme is a Programming designer who loves to create any kind of
+    Hello! I'm a French Programming designer who loves to create any kind of
     visual stuff with technology.
   </IntroText>
 )
@@ -111,6 +111,6 @@ const imgURL = (img) =>
 
 const NavigationWrapper = Component.zi5.pointer.fixed.b0.r0.mb40.mr50.flex.alignCenter.div()
 const Link = Component.fs20.noDecoration.mono.grey2.ml30.a()
-const IntroText = Component.fs100.fixed.textCenter.flex.alignCenter.w100p.h100vh.l0.t0.grey7.ph100.div()
+const IntroText = Component.quote.fs100.fixed.textCenter.flex.alignCenter.w100p.h100vh.l0.t0.grey9.ph100.div()
 
 export default App

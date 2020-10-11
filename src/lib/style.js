@@ -1,4 +1,7 @@
 import { toDashCase, capitalize, array, generate } from './toolbox.js'
+
+import { colors } from './colors.js'
+
 import {
   displays,
   flexAlignments,
@@ -12,7 +15,6 @@ import {
   wordBreaks,
 } from './css.js'
 
-import { colors } from './colors.js'
 import {
   pixels,
   pixelate,
@@ -23,8 +25,9 @@ import {
 
 export const core = {
   heading: `font-family: 'Murmure'`,
-  current: `font-family: 'Archiv'`,
-  mono: `font-family: 'SpaceMono'`,
+  current: `font-family: 'IBMPlexSans'`,
+  quote: `font-family: 'Archiv'`,
+  mono: `font-family: 'IBMPlexMono'`,
   flexColumn: `flex-direction: column`,
   flexRow: `flex-direction: row`,
   flexWrap: `flex-wrap: wrap`,

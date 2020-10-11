@@ -6,7 +6,7 @@
 
 body {
   font-size: 13px;
-  font-family: 'Archiv';
+  font-family: 'IBMPlexSans';
 }
 
 @font-face {
@@ -20,6 +20,11 @@ body {
 }
 
 @font-face {
-  font-family: 'SpaceMono';
-  src: url('./fonts/SpaceMono.ttf') format('truetype');
+  font-family: 'IBMPlexMono';
+  src: url('./fonts/IBMPlexMono.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'IBMPlexSans';
+  src: url('./fonts/IBMPlexSans.ttf') format('truetype');
 }
