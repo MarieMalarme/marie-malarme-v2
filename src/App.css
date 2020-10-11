@@ -25,6 +25,25 @@
   }
 }
 
+.fadeInFast {
+  animation-duration: 0.5s;
+  animation-name: fade-in-fast;
+}
+
+@keyframes fade-in-fast {
+  0% {
+    opacity: 0;
+  }
+
+  5% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
 canvas#move-and-draw {
   mix-blend-mode: exclusion;
   background-color: transparent;

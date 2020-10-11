@@ -26,45 +26,23 @@ const App = () => (
 )
 
 const Home = () => {
-  const target = useRef()
+  const [state, setState] = useState(null)
+  useEffect(() => preloadImages)
 
   return (
     <Div>
       <Intro />
-      <Background target={target} />
-      <Projects target={target} />
-      <Project target={target} />
+      <Background state={state} setState={setState} />
+      <Projects setState={setState} />
+      <Project state={state} setState={setState} />
     </Div>
   )
 }
 
-const imgURL = (img) =>
-  `https://raw.githubusercontent.com/MarieMalarme/marie-malarme/master/public/img/${img}`
+const Background = ({ state, setState }) => {
+  if (!state) return null
 
-const preloadImages = () =>
-  projects.map((p) => {
-    const image = new Image()
-    image.src = imgURL(p.img)
-  })
-
-const Background = ({ target }) => {
-  const [project, setProject] = useState(target.current)
-
-  useEffect(() => preloadImages)
-
-  useEffect(() => {
-    if (project) return
-    document.addEventListener('mousemove', () => {
-      setProject(target.current || undefined)
-    })
-    document.addEventListener('wheel', () => {
-      setProject(target.current || undefined)
-    })
-  })
-
-  if (!project) return null
-
-  const selectedProject = projects.find(({ name }) => name === project.name)
+  const selectedProject = projects.find(({ name }) => name === state.name)
   const url = imgURL(selectedProject.img)
 
   return (
@@ -86,8 +64,6 @@ const Intro = () => (
     visual stuff with technology.
   </IntroText>
 )
-
-const IntroText = Component.fs100.fixed.textCenter.flex.alignCenter.w100p.h100vh.l0.t0.grey7.ph100.div()
 
 const Doc = () => (
   <Div pa100>
@@ -123,7 +99,18 @@ const Navigation = () => (
   </NavigationWrapper>
 )
 
+const preloadImages = () => {
+  projects.forEach((p) => {
+    const image = new Image()
+    image.src = imgURL(p.img)
+  })
+}
+
+const imgURL = (img) =>
+  `https://raw.githubusercontent.com/MarieMalarme/marie-malarme/master/public/img/${img}`
+
 const NavigationWrapper = Component.zi5.pointer.fixed.b0.r0.mb40.mr50.flex.alignCenter.div()
 const Link = Component.fs20.noDecoration.mono.grey2.ml30.a()
+const IntroText = Component.fs100.fixed.textCenter.flex.alignCenter.w100p.h100vh.l0.t0.grey7.ph100.div()
 
 export default App

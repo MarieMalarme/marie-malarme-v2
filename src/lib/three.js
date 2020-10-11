@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState, useRef } from 'react'
+import React, { memo, Fragment, useEffect, useState, useRef } from 'react'
 import {
   Scene,
   PerspectiveCamera,
@@ -26,7 +26,7 @@ import { flatten, reduce, generateId, findByProp } from './toolbox.js'
 import { events } from './events.js'
 import Murmure from '../fonts/Murmure.json'
 
-export const Canvas = ({ children = [], ...props }) => {
+export const Canvas = memo(({ children = [], ...props }) => {
   const mouseCoords = useRef()
 
   const meshes = useRef()
@@ -71,15 +71,15 @@ export const Canvas = ({ children = [], ...props }) => {
 
   useEffect(() => {
     if (!hasChildren || !ref) return
-    Object.values(meshes.current).map((m) => scene.add(m))
+    Object.values(meshes.current).forEach((m) => scene.add(m))
     animateScene()
     ref.appendChild(renderer.domElement)
 
     const listeners = Object.entries(events(props))
 
     if (listeners.length) {
-      listeners.map(([event, func]) => {
-        window.addEventListener(event, (e) => {
+      listeners.forEach(([event, func]) => {
+        document.querySelector('canvas').addEventListener(event, (e) => {
           raycaster.setFromCamera(mouse, camera)
 
           const hovered = raycaster
@@ -88,7 +88,6 @@ export const Canvas = ({ children = [], ...props }) => {
 
           func({ e, camera, scene, renderer, hovered })
         })
-        return listeners
       })
     }
   })
@@ -96,14 +95,15 @@ export const Canvas = ({ children = [], ...props }) => {
   if (!hasChildren) return <EmptyCanvas />
 
   return (
-    <CanvasWrapper mouseCoords={mouseCoords} reference={setRef}>
+    <CanvasWrapper key="canvas" mouseCoords={mouseCoords} reference={setRef}>
       {updatedChildren}
     </CanvasWrapper>
   )
-}
+})
 
 const CanvasWrapper = ({ mouseCoords, reference, children }) => (
   <div
+    key="canvas-wrapper"
     onMouseMove={(e) => {
       mouseCoords.current = {
         x: e.nativeEvent.clientX,
@@ -128,10 +128,9 @@ const animate = ({ meshes }) => {
   const meshesToAnimate = findByProp('animate', meshes)
 
   if (meshesToAnimate.length) {
-    meshesToAnimate.map((m) => {
+    meshesToAnimate.forEach((m) => {
       const { animate } = m
       animate(m)
-      return m
     })
   }
 }
@@ -151,16 +150,14 @@ const hover = ({ meshes, raycaster, mouse, camera, scene }) => {
   const meshesAfterHover = findByProp('afterHover', meshes)
 
   if (hovered) {
-    meshesToHover.map((m) => {
+    meshesToHover.forEach((m) => {
       const { hover } = m
       hover(hovered.object, camera, scene)
-      return m
     })
   } else if (meshesAfterHover.length) {
-    meshesAfterHover.map((m) => {
+    meshesAfterHover.forEach((m) => {
       const { afterHover } = m
       afterHover(m, scene)
-      return m
     })
   }
 }
@@ -186,9 +183,8 @@ export const Group = ({
 
   useEffect(() => {
     const group = new SetGroup()
-    Object.values(groupProps.current).map((m) => {
+    Object.values(groupProps.current).forEach((m) => {
       group.add(m)
-      return group
     })
 
     group.name = name || `group-${generateId()}`

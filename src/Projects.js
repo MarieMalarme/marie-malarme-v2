@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { Div } from './lib/design'
 import {
   Canvas,
@@ -9,34 +9,27 @@ import {
   Text,
   Light,
 } from './lib/three.js'
-import { MeshPhongMaterial, MeshNormalMaterial } from 'three'
 
 import { projects } from './projects.data.js'
 
-export const Projects = ({ target }) => (
-  <Div fixed style={{ overflow: target.current ? 'hidden' : 'auto' }}>
+export const Projects = memo(({ setState }) => (
+  <Div fixed>
     <Canvas
       onWheel={({ e, camera, hovered, scene }) => {
-        if (target.current && target.current.modale) return
-        setTarget(hovered, target)
+        setProject(setState, hovered)
         setCamera(e, camera, scene)
-        scene.children.map((c) => (c.visible = true))
+        scene.children.forEach((c) => (c.visible = true))
       }}
       onResize={({ camera, renderer }) => setSize(camera, renderer)}
       onMouseMove={({ hovered }) => {
-        if (target.current && target.current.modale) return
-        setTarget(hovered, target)
+        setProject(setState, hovered)
       }}
-      onClick={({ hovered }) => setTarget(hovered, target, true)}
+      onClick={({ hovered }) => {
+        setProject(setState, hovered, true)
+      }}
     >
       {projects.map((p, i) => (
-        <ProjectMesh
-          key={`${p.name}-text`}
-          project={p}
-          i={i}
-          setTarget={setTarget}
-          target={target}
-        />
+        <ProjectMesh key={`${p.name}-text`} project={p} i={i} />
       ))}
       {lights.map(({ hue, x, y, z }, i) => (
         <Light
@@ -49,9 +42,9 @@ export const Projects = ({ target }) => (
       ))}
     </Canvas>
   </Div>
-)
+))
 
-const ProjectMesh = ({ project, i, setTarget, target, ...props }) => {
+const ProjectMesh = ({ project, i, ...props }) => {
   const first = i === 0
   const { name } = project
 
@@ -76,7 +69,6 @@ const Name = ({ name, ...props }) => (
     }}
     afterHover={(mesh, scene) => {
       toggleVisible(mesh, scene, true)
-      document.body.style.cursor = 'default'
     }}
     {...props}
   >
@@ -109,7 +101,7 @@ const toggleVisible = (mesh, scene, toggle) => {
       c.uuid !== mesh.parent.uuid &&
       !c.type.includes('Light'),
   )
-  otherMeshes.map((o) => (o.visible = toggle))
+  otherMeshes.forEach((o) => (o.visible = toggle))
 }
 
 const hover = (mesh, camera, scene) => {
@@ -118,7 +110,6 @@ const hover = (mesh, camera, scene) => {
     mesh.hoverable = false
     return
   }
-  document.body.style.cursor = 'pointer'
   rotate(mesh.parent)
   mesh.parent.animateAfterHover = true
   mesh.hoverable = true
@@ -132,7 +123,7 @@ const setCamera = (e, camera, scene) => {
 
   const sceneLights = scene.children.filter((c) => c.type.includes('Light'))
 
-  sceneLights.map((light, i) => {
+  sceneLights.forEach((light, i) => {
     const hue = lights[i].hue + count
     const saturation = 1
     const luminosity = 0.5
@@ -149,14 +140,14 @@ const setCamera = (e, camera, scene) => {
   }
 }
 
-const setTarget = (hovered, target, modale) => {
+const setProject = (setState, hovered, modale) => {
   if (hovered && hovered.object.hoverable) {
-    target.current = {
+    setState({
       name: hovered.object.parent.name,
       modale,
-    }
+    })
   } else {
-    target.current = undefined
+    setState(null)
   }
 }
 
