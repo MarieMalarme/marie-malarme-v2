@@ -13,7 +13,7 @@
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
     "serve": "^11.3.2",
-    "three": "^0.115.0"
+    "three": "^0.137.0"
   },
   "scripts": {
     "start": "serve -s build",
